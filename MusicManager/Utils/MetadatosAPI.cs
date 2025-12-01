@@ -11,8 +11,15 @@ namespace MusicManager.Utils
     {
         private static readonly HttpClient http = new HttpClient();
 
+        // Constructor estático → se ejecuta solo 1 vez
+        static MetadatosAPI()
+        {
+            http.DefaultRequestHeaders.UserAgent.Clear();
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("MusicManager/1.0 (contacto@ejemplo.com)");
+        }
+
         /// <summary>
-        /// Buscar una única coincidencia rápida (primer resultado).
+        /// Buscar una coincidencia rápida (primer resultado).
         /// </summary>
         public static async Task<MetadataResult> BuscarMetadatos(string titulo, string artista)
         {
@@ -33,11 +40,10 @@ namespace MusicManager.Utils
 
             try
             {
-                string qTitulo = Uri.EscapeDataString(titulo);
-                string qArtista = Uri.EscapeDataString(artista);
+                // Construir búsqueda flexible (mucho más efectiva)
+                string query = Uri.EscapeDataString($"{titulo} {artista}");
 
-                string url =
-                    $"https://musicbrainz.org/ws/2/recording/?query=recording:{qTitulo}%20AND%20artist:{qArtista}&fmt=json";
+                string url = $"https://musicbrainz.org/ws/2/recording/?query={query}&fmt=json";
 
                 var response = await http.GetAsync(url);
 
@@ -55,71 +61,66 @@ namespace MusicManager.Utils
                 {
                     var r = new MetadataResult();
 
-                    // Título
+                    // TÍTULO
                     r.Titulo = rec.GetProperty("title").GetString() ?? "";
 
-                    // Artista
-                    if (rec.TryGetProperty("artist-credit", out var ac))
+                    // ARTISTA
+                    if (rec.TryGetProperty("artist-credit", out var ac) &&
+                        ac.GetArrayLength() > 0)
                     {
-                        if (ac.GetArrayLength() > 0)
-                        {
-                            r.Artista = ac[0]
-                                .GetProperty("artist")
-                                .GetProperty("name")
-                                .GetString() ?? "";
-                        }
+                        r.Artista = ac[0]
+                            .GetProperty("artist")
+                            .GetProperty("name")
+                            .GetString() ?? "";
                     }
 
-                    // Álbum
-                    if (rec.TryGetProperty("releases", out var rels) && rels.GetArrayLength() > 0)
+                    // ALBUM + AÑO
+                    if (rec.TryGetProperty("releases", out var rels) &&
+                        rels.GetArrayLength() > 0)
                     {
                         r.Album = rels[0].GetProperty("title").GetString() ?? "";
 
-                        // Año
                         if (rels[0].TryGetProperty("date", out var date))
                         {
-                            string d = date.GetString();
-                            if (!string.IsNullOrEmpty(d) && d.Length >= 4)
-                                r.Anio = int.TryParse(d.Substring(0, 4), out int y) ? y : 0;
+                            var s = date.GetString();
+                            if (!string.IsNullOrEmpty(s) && s.Length >= 4)
+                                r.Anio = int.TryParse(s.Substring(0, 4), out int y) ? y : 0;
                         }
                     }
 
-                    // Género / etiquetas
-                    if (rec.TryGetProperty("tags", out var tags) && tags.GetArrayLength() > 0)
+                    // GÉNERO (opcional)
+                    if (rec.TryGetProperty("tags", out var tags) &&
+                        tags.GetArrayLength() > 0)
                     {
-                        r.Genero = tags[0].GetProperty("name").GetString();
-                    }
-                    else
-                    {
-                        r.Genero = "";
+                        r.Genero = tags[0].GetProperty("name").GetString() ?? "";
                     }
 
                     resultados.Add(r);
                 }
-
-                return resultados;
             }
-            catch
+            catch (Exception ex)
             {
-                return resultados;
+                System.Windows.Forms.MessageBox.Show("Error MusicBrainz: " + ex.Message);
             }
+
+            return resultados;
         }
-    }
 
-    /// <summary>
-    /// Estructura con metadatos completos de MusicBrainz.
-    /// </summary>
-    public class MetadataResult
-    {
-        public string Titulo { get; set; }
-        public string Artista { get; set; }
-        public string Album { get; set; }
-        public int Anio { get; set; }
-        public string Genero { get; set; }
-
-        public override string ToString()
+        /// <summary>
+        /// Estructura con metadatos completos de MusicBrainz.
+        /// </summary>
+        public class MetadataResult
         {
-            return $"{Artista} - {Titulo} ({Album}, {Anio}) [{Genero}]";
+            public string Titulo { get; set; }
+            public string Artista { get; set; }
+            public string Album { get; set; }
+            public int Anio { get; set; }
+            public string Genero { get; set; }
+
+            public override string ToString()
+            {
+                return $"{Artista} - {Titulo} ({Album}, {Anio}) [{Genero}]";
+            }
         }
     }
 }

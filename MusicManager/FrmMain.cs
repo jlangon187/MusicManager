@@ -84,15 +84,24 @@ namespace MusicManager
 
         private void ReproducirCancion(string ruta)
         {
-            reproductor.Stop();
-            archivoAudio?.Dispose();
+            try
+            {
+                reproductor.Stop();
+                archivoAudio?.Dispose();
 
-            archivoAudio = new AudioFileReader(ruta);
-            reproductor.Init(archivoAudio);
-            reproductor.Play();
+                archivoAudio = new AudioFileReader(ruta);
 
-            lblReproduciendo.Text = "Reproduciendo: " + Path.GetFileName(ruta);
+                reproductor.Init(archivoAudio);
+                reproductor.Play();
+
+                lblReproduciendo.Text = "Reproduciendo: " + Path.GetFileName(ruta);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al reproducir: " + ex.Message);
+            }
         }
+
 
         private void btnPausa_Click(object sender, EventArgs e) => reproductor.Pause();
         private void btnPlay_Click(object sender, EventArgs e) => reproductor.Play();
@@ -128,7 +137,6 @@ namespace MusicManager
             dgvCanciones.CurrentRow.Cells["colGenero"].Value = meta.Genero;
             dgvCanciones.CurrentRow.Cells["colAnno"].Value = meta.Anio;
 
-            // ✔ Guardar en BD usando GestorMusica
             GuardarFilaEnBD(dgvCanciones.CurrentRow);
 
             ActualizarEstadisticas();

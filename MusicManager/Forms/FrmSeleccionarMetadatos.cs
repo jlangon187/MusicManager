@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using MusicManager.Utils;
+using static MusicManager.Utils.MetadatosAPI;
 
 namespace MusicManager
 {
     public partial class FrmSeleccionarMetadatos : Form
     {
-        public MetadataResult Seleccionado { get; private set; }
+        public List<MetadataResult> resultados = new List<MetadataResult>();
+        private List<MetadataResult> lista;
 
-        private List<MetadataResult> resultados;
+        public MetadataResult Seleccionado { get; private set; }
 
         public FrmSeleccionarMetadatos(List<MetadataResult> lista)
         {
             InitializeComponent();
-            resultados = lista;
+            this.lista = lista;
         }
 
         private void FrmSeleccionarMetadatos_Load(object sender, EventArgs e)
