@@ -8,12 +8,8 @@
         private Button btnAceptar;
         private Button btnCancelar;
         private Label lblTitulo;
-
-        private DataGridViewTextBoxColumn colTitulo;
-        private DataGridViewTextBoxColumn colArtista;
-        private DataGridViewTextBoxColumn colAlbum;
-        private DataGridViewTextBoxColumn colAnio;
-        private DataGridViewTextBoxColumn colGenero;
+        private TextBox txtBusqueda;
+        private Button btnBuscar;
 
         protected override void Dispose(bool disposing)
         {
@@ -25,67 +21,157 @@
 
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-
             dgvResultados = new DataGridView();
             btnAceptar = new Button();
             btnCancelar = new Button();
             lblTitulo = new Label();
-
+            txtBusqueda = new TextBox();
+            btnBuscar = new Button();
+            panel1 = new Panel();
+            pnControles = new Panel();
             colTitulo = new DataGridViewTextBoxColumn();
             colArtista = new DataGridViewTextBoxColumn();
             colAlbum = new DataGridViewTextBoxColumn();
-            colAnio = new DataGridViewTextBoxColumn();
             colGenero = new DataGridViewTextBoxColumn();
-
-            // FORM
-            this.ClientSize = new Size(700, 400);
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.Text = "Seleccionar metadatos";
-            this.Load += FrmSeleccionarMetadatos_Load;
-
-            // LABEL
-            lblTitulo.Text = "Seleccione la coincidencia correcta:";
-            lblTitulo.AutoSize = true;
-            lblTitulo.Left = 10;
-            lblTitulo.Top = 10;
-            lblTitulo.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-
-            // DATAGRIDVIEW
-            dgvResultados.Left = 10;
-            dgvResultados.Top = 40;
-            dgvResultados.Width = 670;
-            dgvResultados.Height = 280;
+            colAnio = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgvResultados).BeginInit();
+            panel1.SuspendLayout();
+            pnControles.SuspendLayout();
+            SuspendLayout();
+            // 
+            // dgvResultados
+            // 
             dgvResultados.AllowUserToAddRows = false;
-            dgvResultados.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvResultados.Columns.AddRange(new DataGridViewColumn[] { colTitulo, colArtista, colAlbum, colGenero, colAnio });
+            dgvResultados.Dock = DockStyle.Fill;
+            dgvResultados.Location = new Point(0, 0);
+            dgvResultados.Name = "dgvResultados";
             dgvResultados.RowHeadersVisible = false;
-
-            colTitulo.HeaderText = "Título";
-            colArtista.HeaderText = "Artista";
-            colAlbum.HeaderText = "Álbum";
-            colAnio.HeaderText = "Año";
-            colGenero.HeaderText = "Género";
-
-            dgvResultados.Columns.AddRange(colTitulo, colArtista, colAlbum, colAnio, colGenero);
-
-            // BOTONES
+            dgvResultados.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvResultados.Size = new Size(864, 394);
+            dgvResultados.TabIndex = 1;
+            // 
+            // btnAceptar
+            // 
+            btnAceptar.Location = new Point(285, 13);
+            btnAceptar.Name = "btnAceptar";
+            btnAceptar.Size = new Size(120, 23);
+            btnAceptar.TabIndex = 2;
             btnAceptar.Text = "Aceptar";
-            btnAceptar.Width = 120;
-            btnAceptar.Left = 380;
-            btnAceptar.Top = 330;
             btnAceptar.Click += btnAceptar_Click;
-
+            // 
+            // btnCancelar
+            // 
+            btnCancelar.Location = new Point(479, 13);
+            btnCancelar.Name = "btnCancelar";
+            btnCancelar.Size = new Size(120, 23);
+            btnCancelar.TabIndex = 3;
             btnCancelar.Text = "Cancelar";
-            btnCancelar.Width = 120;
-            btnCancelar.Left = 530;
-            btnCancelar.Top = 330;
             btnCancelar.Click += btnCancelar_Click;
-
-            // ADD ALL
-            this.Controls.Add(lblTitulo);
-            this.Controls.Add(dgvResultados);
-            this.Controls.Add(btnAceptar);
-            this.Controls.Add(btnCancelar);
+            // 
+            // lblTitulo
+            // 
+            lblTitulo.AutoSize = true;
+            lblTitulo.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblTitulo.Location = new Point(10, 10);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(251, 20);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "Seleccione la coincidencia correcta:";
+            // 
+            // txtBusqueda
+            // 
+            txtBusqueda.Dock = DockStyle.Top;
+            txtBusqueda.Location = new Point(0, 0);
+            txtBusqueda.Name = "txtBusqueda";
+            txtBusqueda.PlaceholderText = "Buscar manualmente...";
+            txtBusqueda.Size = new Size(864, 23);
+            txtBusqueda.TabIndex = 3;
+            // 
+            // btnBuscar
+            // 
+            btnBuscar.Dock = DockStyle.Top;
+            btnBuscar.Location = new Point(0, 23);
+            btnBuscar.Name = "btnBuscar";
+            btnBuscar.Size = new Size(864, 32);
+            btnBuscar.TabIndex = 2;
+            btnBuscar.Text = "Buscar";
+            btnBuscar.Click += btnBuscar_Click;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(dgvResultados);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 55);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(864, 394);
+            panel1.TabIndex = 4;
+            // 
+            // pnControles
+            // 
+            pnControles.Controls.Add(btnAceptar);
+            pnControles.Controls.Add(btnCancelar);
+            pnControles.Dock = DockStyle.Bottom;
+            pnControles.Location = new Point(0, 401);
+            pnControles.Name = "pnControles";
+            pnControles.Size = new Size(864, 48);
+            pnControles.TabIndex = 5;
+            // 
+            // colTitulo
+            // 
+            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colTitulo.HeaderText = "Título";
+            colTitulo.Name = "colTitulo";
+            colTitulo.Width = 63;
+            // 
+            // colArtista
+            // 
+            colArtista.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colArtista.HeaderText = "Artista";
+            colArtista.Name = "colArtista";
+            colArtista.Width = 66;
+            // 
+            // colAlbum
+            // 
+            colAlbum.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colAlbum.HeaderText = "Álbum";
+            colAlbum.Name = "colAlbum";
+            colAlbum.Width = 68;
+            // 
+            // colGenero
+            // 
+            colGenero.HeaderText = "Género";
+            colGenero.Name = "colGenero";
+            // 
+            // colAnio
+            // 
+            colAnio.HeaderText = "Año";
+            colAnio.Name = "colAnio";
+            // 
+            // FrmSeleccionarMetadatos
+            // 
+            ClientSize = new Size(864, 449);
+            Controls.Add(pnControles);
+            Controls.Add(panel1);
+            Controls.Add(btnBuscar);
+            Controls.Add(txtBusqueda);
+            Controls.Add(lblTitulo);
+            Name = "FrmSeleccionarMetadatos";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Seleccionar metadatos";
+            Load += FrmSeleccionarMetadatos_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvResultados).EndInit();
+            panel1.ResumeLayout(false);
+            pnControles.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
+        private Panel panel1;
+        private Panel pnControles;
+        private DataGridViewTextBoxColumn colTitulo;
+        private DataGridViewTextBoxColumn colArtista;
+        private DataGridViewTextBoxColumn colAlbum;
+        private DataGridViewTextBoxColumn colGenero;
+        private DataGridViewTextBoxColumn colAnio;
     }
 }

@@ -1,5 +1,4 @@
-﻿using FacturacionDAM.Modelos;
-using MusicManager.Modelos;
+﻿using MusicManager.Modelos;
 using MySql.Data.MySqlClient;
 using System;
 using System.Diagnostics;
@@ -22,7 +21,7 @@ namespace MusicManager
 
         private MySqlConnection _conexion = null;           // Cliente MySQL para comunicarnos con la base de datos
 
-        //private DebugDAM debug;                             // Objeto para gestionar el log de depuración.
+        private DebugApp debug;                             // Objeto para gestionar el log de depuración.
         public bool Conectado => LaConexion != null && LaConexion.State == System.Data.ConnectionState.Open;
 
         public AppMusic()
@@ -52,7 +51,7 @@ namespace MusicManager
             rutaConfigDB = Path.Combine(rutaBase, "configDB.json");
 
             // Inicializa el sistema de logs
-            //debug = new DebugApp(rutaBase);
+            debug = new DebugApp(rutaBase);
 
             // Configuro y me conecto a la base de datos.
             ConfiguraYConectaDB(rutaConfigDB);
@@ -195,7 +194,7 @@ namespace MusicManager
         public void RegistrarLog(string proceso, string mensaje)
         {
             string linea = $"{DateTime.Now:dd-MM-yyyy} | {DateTime.Now:HH:mm:ss} | {proceso} | {mensaje}";
-            //debug.GuardarLog(linea);
+            debug.GuardarLog(linea);
         }
     }
 }

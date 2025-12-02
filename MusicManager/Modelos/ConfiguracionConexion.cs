@@ -1,5 +1,5 @@
 ﻿
-namespace FacturacionDAM.Modelos
+namespace MusicManager.Modelos
 {
     public class ConfiguracionConexion
     {

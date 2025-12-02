@@ -1,78 +1,60 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-
-namespace MusicManager.Utils
+﻿public static class Organizador
 {
-    public static class Organizador
+    public static string OrganizarArchivo(
+        string rutaOriginal,
+        string carpetaBase,
+        string artista,
+        string album,
+        string genero,
+        string anno,
+        int modo)
     {
-        /// <summary>
-        /// Crea una ruta física usando metadatos y mueve el archivo.
-        /// </summary>
-        public static void OrganizarArchivo(
-            string rutaOriginal,
-            string carpetaBase,
-            string artista,
-            string album,
-            string genero,
-            string año,
-            int modo)
+        try
         {
-            // Evitar caracteres no válidos
-            artista = Sanitizar(artista);
-            album = Sanitizar(album);
-            genero = Sanitizar(genero);
-            año = Sanitizar(año);
+            if (!File.Exists(rutaOriginal))
+                return null;
 
-            string nuevaRuta = "";
+            string destino = carpetaBase;
 
             switch (modo)
             {
-                case 1: // Artista / Álbum / archivo
-                    nuevaRuta = Path.Combine(carpetaBase, artista, album);
+                case 1: // Artista / Álbum
+                    destino = Path.Combine(carpetaBase, artista, album);
                     break;
 
-                case 2: // Género / Año / archivo
-                    nuevaRuta = Path.Combine(carpetaBase, genero, año);
+                case 2: // Género / Año
+                    destino = Path.Combine(carpetaBase, genero, anno);
                     break;
 
-                case 3: // Año / Artista / archivo
-                    nuevaRuta = Path.Combine(carpetaBase, año, artista);
+                case 3: // Año / Artista
+                    destino = Path.Combine(carpetaBase, anno, artista);
                     break;
-
-                default:
-                    MessageBox.Show("Modo de organización no reconocido.");
-                    return;
             }
 
             // Crear carpetas si no existen
-            Directory.CreateDirectory(nuevaRuta);
+            Directory.CreateDirectory(destino);
 
-            // Nombre del archivo
+            // Construir nueva ruta
             string nombreArchivo = Path.GetFileName(rutaOriginal);
+            string nuevaRuta = Path.Combine(destino, nombreArchivo);
 
-            string destino = Path.Combine(nuevaRuta, nombreArchivo);
+            // Evitar colisiones
+            if (File.Exists(nuevaRuta))
+            {
+                string sinExt = Path.GetFileNameWithoutExtension(nombreArchivo);
+                string ext = Path.GetExtension(nombreArchivo);
+                nuevaRuta = Path.Combine(destino,
+                    $"{sinExt}_{DateTime.Now.Ticks}{ext}");
+            }
 
-            // Mover el archivo
-            try
-            {
-                File.Move(rutaOriginal, destino, true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error moviendo archivo:\n" + ex.Message);
-            }
+            // Mover archivo
+            File.Move(rutaOriginal, nuevaRuta);
+
+            return nuevaRuta;
         }
-
-        private static string Sanitizar(string valor)
+        catch
         {
-            if (string.IsNullOrWhiteSpace(valor))
-                return "Desconocido";
-
-            foreach (char c in Path.GetInvalidFileNameChars())
-                valor = valor.Replace(c, '_');
-
-            return valor.Trim();
+            return null;
         }
     }
 }
