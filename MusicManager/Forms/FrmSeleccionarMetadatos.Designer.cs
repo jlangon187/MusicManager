@@ -119,34 +119,35 @@
             // 
             // colTitulo
             // 
-            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colTitulo.HeaderText = "Título";
             colTitulo.Name = "colTitulo";
-            colTitulo.Width = 63;
             // 
             // colArtista
             // 
-            colArtista.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colArtista.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colArtista.HeaderText = "Artista";
             colArtista.Name = "colArtista";
-            colArtista.Width = 66;
+            colArtista.Width = 250;
             // 
             // colAlbum
             // 
-            colAlbum.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colAlbum.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colAlbum.HeaderText = "Álbum";
             colAlbum.Name = "colAlbum";
-            colAlbum.Width = 68;
+            colAlbum.Width = 200;
             // 
             // colGenero
             // 
             colGenero.HeaderText = "Género";
             colGenero.Name = "colGenero";
+            colGenero.Width = 120;
             // 
             // colAnio
             // 
             colAnio.HeaderText = "Año";
             colAnio.Name = "colAnio";
+            colAnio.Width = 80;
             // 
             // FrmSeleccionarMetadatos
             // 

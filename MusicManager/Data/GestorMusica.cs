@@ -324,5 +324,47 @@ namespace MusicManager.Data
                 .Trim()
                 .ToLowerInvariant();
         }
+
+        public void ActualizarMetadatosEnArchivo(string ruta, string titulo, string artista, string album, string genero, int anio)
+        {
+            try
+            {
+                if (!File.Exists(ruta))
+                    return;
+
+                var file = TagLib.File.Create(ruta);
+
+                if (file.Tag == null)
+                {
+                    MessageBox.Show("Este archivo no tiene estructura de etiquetas válida.");
+                    return;
+                }
+
+                // ---- TÍTULO ----
+                file.Tag.Title = titulo ?? "";
+
+                // ---- ARTISTA ----
+                file.Tag.Performers = new[] { artista ?? "" };
+
+                // ---- ÁLBUM ----
+                file.Tag.Album = album ?? "";
+
+                // ---- GÉNERO ----
+                file.Tag.Genres = new[] { genero ?? "" };
+
+                // ---- AÑO ----
+                if (anio > 0)
+                    file.Tag.Year = (uint)anio;
+                else
+                    file.Tag.Year = 0;
+
+                // ---- GUARDAR ----
+                file.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error actualizando metadatos del archivo: " + ex.Message);
+            }
+        }
     }
 }
