@@ -90,6 +90,7 @@ namespace MusicManager
             txtBuscarCancion = new TextBox();
             btnLimpiarBusqueda = new Button();
             panelLateral = new Panel();
+            pictureBox1 = new PictureBox();
             btnSincronizar = new Button();
             btnOrganizar = new Button();
             btnListasReproduccion = new Button();
@@ -97,7 +98,6 @@ namespace MusicManager
             btnEditarMetadatos = new Button();
             btnSeleccionarCarpeta = new Button();
             pnStatusBar = new Panel();
-            pictureBox1 = new PictureBox();
             panelReproductor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackProgreso).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trackVolumen).BeginInit();
@@ -108,8 +108,8 @@ namespace MusicManager
             statusStrip1.SuspendLayout();
             pnHerramientas.SuspendLayout();
             panelLateral.SuspendLayout();
-            pnStatusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            pnStatusBar.SuspendLayout();
             SuspendLayout();
             // 
             // panelReproductor
@@ -124,16 +124,16 @@ namespace MusicManager
             panelReproductor.Controls.Add(btnPlay);
             panelReproductor.Controls.Add(btnPausa);
             panelReproductor.Dock = DockStyle.Bottom;
-            panelReproductor.Location = new Point(0, 806);
+            panelReproductor.Location = new Point(0, 684);
             panelReproductor.Name = "panelReproductor";
-            panelReproductor.Size = new Size(1222, 60);
+            panelReproductor.Size = new Size(1116, 60);
             panelReproductor.TabIndex = 1;
             // 
             // lblVolumen
             // 
             lblVolumen.Anchor = AnchorStyles.Right;
             lblVolumen.AutoSize = true;
-            lblVolumen.Location = new Point(1055, 32);
+            lblVolumen.Location = new Point(949, 32);
             lblVolumen.Name = "lblVolumen";
             lblVolumen.Size = new Size(57, 15);
             lblVolumen.TabIndex = 7;
@@ -142,7 +142,7 @@ namespace MusicManager
             // lblTiempo
             // 
             lblTiempo.Anchor = AnchorStyles.Right;
-            lblTiempo.Location = new Point(937, 32);
+            lblTiempo.Location = new Point(831, 32);
             lblTiempo.Name = "lblTiempo";
             lblTiempo.Size = new Size(93, 19);
             lblTiempo.TabIndex = 0;
@@ -154,7 +154,7 @@ namespace MusicManager
             trackProgreso.AutoSize = false;
             trackProgreso.Location = new Point(206, 29);
             trackProgreso.Name = "trackProgreso";
-            trackProgreso.Size = new Size(725, 25);
+            trackProgreso.Size = new Size(619, 25);
             trackProgreso.TabIndex = 1;
             trackProgreso.TickStyle = TickStyle.None;
             trackProgreso.MouseDown += trackProgreso_MouseDown;
@@ -164,7 +164,7 @@ namespace MusicManager
             // 
             trackVolumen.Anchor = AnchorStyles.Right;
             trackVolumen.AutoSize = false;
-            trackVolumen.Location = new Point(1109, 29);
+            trackVolumen.Location = new Point(1003, 29);
             trackVolumen.Maximum = 100;
             trackVolumen.Name = "trackVolumen";
             trackVolumen.Size = new Size(101, 25);
@@ -219,7 +219,7 @@ namespace MusicManager
             pnMenuPrincipal.Dock = DockStyle.Top;
             pnMenuPrincipal.Location = new Point(0, 0);
             pnMenuPrincipal.Name = "pnMenuPrincipal";
-            pnMenuPrincipal.Size = new Size(1222, 30);
+            pnMenuPrincipal.Size = new Size(1116, 30);
             pnMenuPrincipal.TabIndex = 4;
             // 
             // menuStrip1
@@ -227,7 +227,7 @@ namespace MusicManager
             menuStrip1.Items.AddRange(new ToolStripItem[] { archivoToolStripMenuItem, ayudaToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1222, 24);
+            menuStrip1.Size = new Size(1116, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -287,7 +287,7 @@ namespace MusicManager
             panelContenido.Location = new Point(180, 60);
             panelContenido.Name = "panelContenido";
             panelContenido.Padding = new Padding(10);
-            panelContenido.Size = new Size(1042, 746);
+            panelContenido.Size = new Size(936, 594);
             panelContenido.TabIndex = 5;
             // 
             // dgvCanciones
@@ -300,7 +300,7 @@ namespace MusicManager
             dgvCanciones.ReadOnly = true;
             dgvCanciones.RowHeadersVisible = false;
             dgvCanciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCanciones.Size = new Size(1022, 726);
+            dgvCanciones.Size = new Size(916, 574);
             dgvCanciones.TabIndex = 0;
             dgvCanciones.CellDoubleClick += dgvCanciones_CellDoubleClick;
             // 
@@ -354,7 +354,7 @@ namespace MusicManager
             statusStrip1.Items.AddRange(new ToolStripItem[] { lbConexionDB, lblTotalArtistas, lblTotalAlbumes, lblTotalGeneros, lblDuracionTotal, lblTotalCanciones });
             statusStrip1.Location = new Point(0, 0);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1042, 30);
+            statusStrip1.Size = new Size(936, 30);
             statusStrip1.SizingGrip = false;
             statusStrip1.TabIndex = 3;
             // 
@@ -363,14 +363,14 @@ namespace MusicManager
             lbConexionDB.AutoSize = false;
             lbConexionDB.Margin = new Padding(0, 3, 50, 2);
             lbConexionDB.Name = "lbConexionDB";
-            lbConexionDB.Size = new Size(300, 25);
+            lbConexionDB.Size = new Size(220, 25);
             lbConexionDB.Text = "No está conectado a la base de datos";
             lbConexionDB.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblTotalArtistas
             // 
             lblTotalArtistas.Name = "lblTotalArtistas";
-            lblTotalArtistas.Size = new Size(357, 25);
+            lblTotalArtistas.Size = new Size(331, 25);
             lblTotalArtistas.Spring = true;
             lblTotalArtistas.Text = "Artistas: 0";
             lblTotalArtistas.TextAlign = ContentAlignment.MiddleRight;
@@ -408,7 +408,7 @@ namespace MusicManager
             pnHerramientas.Location = new Point(180, 30);
             pnHerramientas.Name = "pnHerramientas";
             pnHerramientas.Padding = new Padding(10, 5, 10, 5);
-            pnHerramientas.Size = new Size(1042, 30);
+            pnHerramientas.Size = new Size(936, 30);
             pnHerramientas.TabIndex = 5;
             // 
             // txtBuscarCancion
@@ -443,8 +443,20 @@ namespace MusicManager
             panelLateral.Location = new Point(0, 30);
             panelLateral.Name = "panelLateral";
             panelLateral.Padding = new Padding(10);
-            panelLateral.Size = new Size(180, 776);
+            panelLateral.Size = new Size(180, 654);
             panelLateral.TabIndex = 2;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.InitialImage = (Image)resources.GetObject("pictureBox1.InitialImage");
+            pictureBox1.Location = new Point(10, 484);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(160, 160);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 6;
+            pictureBox1.TabStop = false;
             // 
             // btnSincronizar
             // 
@@ -509,32 +521,22 @@ namespace MusicManager
             // 
             pnStatusBar.Controls.Add(statusStrip1);
             pnStatusBar.Dock = DockStyle.Bottom;
-            pnStatusBar.Location = new Point(180, 776);
+            pnStatusBar.Location = new Point(180, 654);
             pnStatusBar.Name = "pnStatusBar";
-            pnStatusBar.Size = new Size(1042, 30);
+            pnStatusBar.Size = new Size(936, 30);
             pnStatusBar.TabIndex = 6;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.InitialImage = (Image)resources.GetObject("pictureBox1.InitialImage");
-            pictureBox1.Location = new Point(10, 606);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(160, 160);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 6;
-            pictureBox1.TabStop = false;
             // 
             // FrmMain
             // 
-            ClientSize = new Size(1222, 866);
-            Controls.Add(pnStatusBar);
+            ClientSize = new Size(1116, 744);
             Controls.Add(panelContenido);
+            Controls.Add(pnStatusBar);
             Controls.Add(pnHerramientas);
             Controls.Add(panelLateral);
             Controls.Add(panelReproductor);
             Controls.Add(pnMenuPrincipal);
             MainMenuStrip = menuStrip1;
+            MinimumSize = new Size(900, 600);
             Name = "FrmMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MusicManager";
@@ -555,9 +557,9 @@ namespace MusicManager
             pnHerramientas.ResumeLayout(false);
             pnHerramientas.PerformLayout();
             panelLateral.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             pnStatusBar.ResumeLayout(false);
             pnStatusBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
         private Panel pnStatusBar;
