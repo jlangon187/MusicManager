@@ -99,13 +99,13 @@ namespace MusicManager
             txtBuscarCancion = new TextBox();
             btnLimpiarBusqueda = new Button();
             panelLateral = new Panel();
+            btnSincronizaTodo = new Button();
             pictureBox1 = new PictureBox();
             btnOrganizar = new Button();
             btnDescargarMetadatos = new Button();
             btnEditarMetadatos = new Button();
             btnSeleccionarCarpeta = new Button();
             pnStatusBar = new Panel();
-            btnSincronizaTodo = new Button();
             panelReproductor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackProgreso).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trackVolumen).BeginInit();
@@ -178,6 +178,7 @@ namespace MusicManager
             trackVolumen.Size = new Size(101, 25);
             trackVolumen.TabIndex = 2;
             trackVolumen.TickStyle = TickStyle.None;
+            trackVolumen.Cursor = Cursors.Hand;
             trackVolumen.Value = 100;
             trackVolumen.ValueChanged += trackVolumen_ValueChanged;
             // 
@@ -453,7 +454,7 @@ namespace MusicManager
             // 
             // panelLateral
             // 
-            panelLateral.BackColor = Color.LightGray;
+            panelLateral.BackColor = SystemColors.Control;
             panelLateral.Controls.Add(btnSincronizaTodo);
             panelLateral.Controls.Add(pictureBox1);
             panelLateral.Controls.Add(btnOrganizar);
@@ -466,6 +467,16 @@ namespace MusicManager
             panelLateral.Padding = new Padding(10);
             panelLateral.Size = new Size(180, 654);
             panelLateral.TabIndex = 2;
+            // 
+            // btnSincronizaTodo
+            // 
+            btnSincronizaTodo.Dock = DockStyle.Top;
+            btnSincronizaTodo.Location = new Point(10, 170);
+            btnSincronizaTodo.Name = "btnSincronizaTodo";
+            btnSincronizaTodo.Size = new Size(160, 40);
+            btnSincronizaTodo.TabIndex = 7;
+            btnSincronizaTodo.Text = "Sincronizar Todo";
+            btnSincronizaTodo.Click += btnSincronizaTodo_Click;
             // 
             // pictureBox1
             // 
@@ -527,16 +538,6 @@ namespace MusicManager
             pnStatusBar.Name = "pnStatusBar";
             pnStatusBar.Size = new Size(936, 30);
             pnStatusBar.TabIndex = 6;
-            // 
-            // btnSincronizaTodo
-            // 
-            btnSincronizaTodo.Dock = DockStyle.Top;
-            btnSincronizaTodo.Location = new Point(10, 210);
-            btnSincronizaTodo.Name = "btnSincronizaTodo";
-            btnSincronizaTodo.Size = new Size(160, 40);
-            btnSincronizaTodo.TabIndex = 7;
-            btnSincronizaTodo.Text = "Sincronizar Todo";
-            btnSincronizaTodo.Click += btnSincronizaTodo_Click;
             // 
             // FrmMain
             // 

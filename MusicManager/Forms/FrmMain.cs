@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using TagLib;
 using File = System.IO.File;
 using Timer = System.Windows.Forms.Timer;
+using System.Drawing.Configuration;
 
 namespace MusicManager
 {
@@ -50,6 +51,8 @@ namespace MusicManager
             dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(131, 189, 87);
             dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
             dgvCanciones.EnableHeadersVisualStyles = false;
+
+            
 
             RefrescarControles();                                                   // Refrescar controles según el estado
 
@@ -692,7 +695,7 @@ namespace MusicManager
                     row.Cells["colArtista"].Value.ToString().ToLower().Contains(filtro) ||
                     row.Cells["colAlbum"].Value.ToString().ToLower().Contains(filtro) ||
                     row.Cells["colGenero"].Value.ToString().ToLower().Contains(filtro) ||
-                    row.Cells["colAnno"].Value.ToString().ToLower().Contains(filtro);
+                    row.Cells["colAnno"].Value.ToString().Contains(filtro);
 
                 row.Visible = visible;
             }
