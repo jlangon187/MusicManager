@@ -59,15 +59,5 @@ namespace MusicManager.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap dd0a44e5_7e28_47ba_ae09_cd0d140abb43 {
-            get {
-                object obj = ResourceManager.GetObject("dd0a44e5-7e28-47ba-ae09-cd0d140abb43", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

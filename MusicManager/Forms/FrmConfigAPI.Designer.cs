@@ -7,16 +7,8 @@
         private Label lblTitulo;
         private GroupBox gpItunes;
         private CheckBox chkItunes;
-
-        private GroupBox gpLastFM;
-        private CheckBox chkLastFM;
-        private Label lblApiKey;
-        private TextBox txtApiKey;
-
         private Button btnTestItunes;
-        private Button btnTestLastFM;
         private Button btnGuardar;
-
         private Label lblEstado;
 
         protected override void Dispose(bool disposing)

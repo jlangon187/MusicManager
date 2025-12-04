@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using TagLib;
 using File = System.IO.File;
 
@@ -19,91 +20,113 @@ namespace MusicManager.Data
             this.tabla = new Tabla(conexion);
         }
 
-        // =============================================================
-        //  ARTISTA
-        // =============================================================
-        public int GetOrCreateArtista(string nombre)
+        // =====================================================================
+        // NORMALIZADORES
+        // =====================================================================
+
+        public static string NormalizarTexto(string s)
         {
-            nombre = string.IsNullOrWhiteSpace(nombre) ? "Desconocido" : nombre.Trim();
+            if (string.IsNullOrWhiteSpace(s))
+                return "desconocido";
 
-            int id = ObtenerId("artista", "nombre", nombre);
-            if (id != -1)
-                return id;
-
-            return tabla.Insertar("artista", ("nombre", nombre));
+            return s.Trim()
+                    .ToLowerInvariant();
         }
 
-        // =============================================================
-        //  GENERO
-        // =============================================================
+        public string NormalizarRuta(string ruta)
+        {
+            return Path.GetFullPath(ruta)
+                .Replace('/', '\\')
+                .Trim()
+                .ToLowerInvariant();
+        }
+
+        // =====================================================================
+        // ARTISTA
+        // =====================================================================
+
+        public int GetOrCreateArtista(string nombre)
+        {
+            string normal = NormalizarTexto(nombre);
+
+            int id = ObtenerIdCaseInsensitive("artista", "nombre", normal);
+            if (id != -1) return id;
+
+            // Guardar el nombre REAL, NO normalizado
+            return tabla.Insertar("artista", ("nombre", nombre.Trim()));
+        }
+
+        // =====================================================================
+        // GÉNERO
+        // =====================================================================
+
         public int GetOrCreateGenero(string nombre)
         {
-            nombre = string.IsNullOrWhiteSpace(nombre) ? "Desconocido" : nombre.Trim();
+            nombre = NormalizarTexto(nombre);
 
-            int id = ObtenerId("genero", "nombre", nombre);
+            int id = ObtenerIdCaseInsensitive("genero", "nombre", nombre);
             if (id != -1)
                 return id;
 
             return tabla.Insertar("genero", ("nombre", nombre));
         }
 
-        // =============================================================
-        //  ALBUM
-        // =============================================================
+        // =====================================================================
+        // ÁLBUM
+        // =====================================================================
+
         public int GetOrCreateAlbum(string titulo, int idArtista, int anio)
         {
-            titulo = string.IsNullOrWhiteSpace(titulo) ? "Desconocido" : titulo.Trim();
+            titulo = NormalizarTexto(titulo);
 
             var cmd = conexion.CreateCommand();
             cmd.CommandText =
-                "SELECT id_album FROM album WHERE titulo=@t AND id_artista=@a LIMIT 1";
+                @"SELECT id_album 
+                  FROM album 
+                  WHERE LOWER(titulo)=LOWER(@t) AND id_artista=@a
+                  LIMIT 1";
 
             cmd.Parameters.AddWithValue("@t", titulo);
             cmd.Parameters.AddWithValue("@a", idArtista);
 
             object res = cmd.ExecuteScalar();
-
             if (res != null)
                 return Convert.ToInt32(res);
 
             return tabla.Insertar("album",
                 ("titulo", titulo),
                 ("anio_lanzamiento", anio),
-                ("id_artista", idArtista)
-            );
+                ("id_artista", idArtista));
         }
 
-        // =============================================================
-        //  CANCIONES
-        // =============================================================
+        // =====================================================================
+        // CANCIONES
+        // =====================================================================
 
         public int? GetCancionPorRuta(string ruta)
         {
-            if (string.IsNullOrWhiteSpace(ruta))
-                return null;
-
             string rutaNorm = NormalizarRuta(ruta);
 
             var cmd = conexion.CreateCommand();
-            cmd.CommandText = "SELECT id_cancion, ruta_archivo FROM cancion";
+            cmd.CommandText =
+                @"SELECT id_cancion 
+                  FROM cancion
+                  WHERE ruta_archivo=@ruta
+                  LIMIT 1";
 
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                string rutaBD = reader.GetString("ruta_archivo");
+            cmd.Parameters.AddWithValue("@ruta", rutaNorm);
 
-                if (NormalizarRuta(rutaBD) == rutaNorm)
-                    return reader.GetInt32("id_cancion");
-            }
+            object res = cmd.ExecuteScalar();
+            if (res == null)
+                return null;
 
-            return null;
+            return Convert.ToInt32(res);
         }
 
         public int InsertarCancion(Cancion c)
         {
-
             return tabla.Insertar("cancion",
-                ("titulo", c.titulo),
+                ("titulo", c.titulo.Trim()),
                 ("duracion", c.duracion),
                 ("id_artista", c.id_artista),
                 ("id_album", c.id_album),
@@ -127,7 +150,7 @@ namespace MusicManager.Data
                     ultima_actualizacion=NOW()
                   WHERE id_cancion=@id";
 
-            cmd.Parameters.AddWithValue("@titulo", c.titulo);
+            cmd.Parameters.AddWithValue("@titulo", NormalizarTexto(c.titulo));
             cmd.Parameters.AddWithValue("@duracion", c.duracion);
             cmd.Parameters.AddWithValue("@id_artista", c.id_artista);
             cmd.Parameters.AddWithValue("@id_album", c.id_album);
@@ -152,9 +175,11 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
-        // =============================================================
-        //  SINCRONIZACIÓN
-        // =============================================================
+        // =====================================================================
+        // SINCRONIZACIÓN
+        // =====================================================================
+
+
 
         public List<string> GetTodasLasRutas()
         {
@@ -176,7 +201,8 @@ namespace MusicManager.Data
         {
             var cmd = conexion.CreateCommand();
             cmd.CommandText = "DELETE FROM cancion WHERE ruta_archivo=@ruta";
-            cmd.Parameters.AddWithValue("@ruta", ruta);
+
+            cmd.Parameters.AddWithValue("@ruta", NormalizarRuta(ruta));
             cmd.ExecuteNonQuery();
         }
 
@@ -185,61 +211,19 @@ namespace MusicManager.Data
             if (!File.Exists(ruta))
                 return;
 
-            ruta = Path.GetFullPath(ruta);
+            ruta = NormalizarRuta(ruta);
 
             TagLib.File tagFile = null;
-            try
-            {
-                tagFile = TagLib.File.Create(ruta);
-            }
-            catch
-            {
-                tagFile = null; // TagLib falló
-            }
 
-            // --- CAMPOS BASE ---
-            string titulo = tagFile?.Tag.Title ?? Path.GetFileNameWithoutExtension(ruta);
-            string artista = tagFile?.Tag.FirstPerformer ?? "Desconocido";
-            string album = tagFile?.Tag.Album ?? "Desconocido";
-            string genero = tagFile?.Tag.FirstGenre ?? "Desconocido";
+            try { tagFile = TagLib.File.Create(ruta); } catch { }
 
-            // --- AÑO SEGURO ---
-            int anio = 0;
+            string titulo = tagFile?.Tag.Title?.Trim() ?? Path.GetFileNameWithoutExtension(ruta);
+            string artista = tagFile?.Tag.FirstPerformer?.Trim() ?? "Desconocido";
+            string album = tagFile?.Tag.Album?.Trim() ?? "Desconocido";
+            string genero = tagFile?.Tag.FirstGenre?.Trim() ?? "Desconocido";
 
-            try
-            {
-                if (tagFile != null && tagFile.Tag.Year > 0)
-                {
-                    anio = (int)tagFile.Tag.Year;
-                }
-                else
-                {
-                    // Intentar extraer año de texto usando Regex
-                    string[] posibles = {
-                tagFile?.Tag.Comment,
-                tagFile?.Tag.Title,
-                tagFile?.Tag.Album
-            };
+            int anio = GetYearSeguro(tagFile);
 
-                    foreach (var txt in posibles)
-                    {
-                        if (string.IsNullOrWhiteSpace(txt)) continue;
-
-                        var m = System.Text.RegularExpressions.Regex.Match(txt, @"\b(19|20)\d{2}\b");
-                        if (m.Success)
-                        {
-                            anio = int.Parse(m.Value);
-                            break;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                anio = 0;
-            }
-
-            // --- DURACIÓN SEGURA ---
             string duracion = "00:00";
             try
             {
@@ -249,19 +233,12 @@ namespace MusicManager.Data
                     duracion = $"{(int)dur.TotalMinutes:00}:{dur.Seconds:00}";
                 }
             }
-            catch
-            {
-                duracion = "00:00";
-            }
+            catch { }
 
-            // --- RELACIONES ---
             int idArtista = GetOrCreateArtista(artista);
             int idGenero = GetOrCreateGenero(genero);
-
-            // Álbum seguro (evita duplicar si año = 0)
             int idAlbum = GetOrCreateAlbum(album, idArtista, anio);
 
-            // --- INSERTAR CANCIÓN ---
             InsertarCancion(new Cancion
             {
                 titulo = titulo,
@@ -274,15 +251,16 @@ namespace MusicManager.Data
             });
         }
 
+        // =====================================================================
+        // UTILIDADES
+        // =====================================================================
 
-        // =============================================================
-        //  UTILIDADES
-        // =============================================================
-
-        private int ObtenerId(string tablaNombre, string campo, string valor)
+        private int ObtenerIdCaseInsensitive(string tablaNombre, string campo, string valor)
         {
             var cmd = conexion.CreateCommand();
-            cmd.CommandText = $"SELECT id_{tablaNombre} FROM {tablaNombre} WHERE {campo}=@v LIMIT 1";
+            cmd.CommandText =
+                $"SELECT id_{tablaNombre} FROM {tablaNombre} WHERE LOWER({campo})=LOWER(@v) LIMIT 1";
+
             cmd.Parameters.AddWithValue("@v", valor);
 
             object res = cmd.ExecuteScalar();
@@ -291,39 +269,33 @@ namespace MusicManager.Data
 
         private int GetYearSeguro(TagLib.File tagFile)
         {
-            // 1. Si TagLib ya proporciona año válido, usarlo
+            if (tagFile == null)
+                return 0;
+
             if (tagFile.Tag.Year > 0)
                 return (int)tagFile.Tag.Year;
 
-            // 2. Intentar leer "date" o "year" desde Taglib como texto
-            // Algunas versiones almacenan fechas como string dentro de Tag.Comment
-            string[] posiblesFechas = {
+            string[] posibles = {
                 tagFile.Tag.Comment,
                 tagFile.Tag.Title,
                 tagFile.Tag.Album
             };
 
-            foreach (var texto in posiblesFechas)
+            foreach (var txt in posibles)
             {
-                if (string.IsNullOrWhiteSpace(texto))
-                    continue;
+                if (string.IsNullOrWhiteSpace(txt)) continue;
 
-                // Buscar cualquier grupo de 4 números seguidos → año
-                var match = System.Text.RegularExpressions.Regex.Match(texto, @"\b(19|20)\d{2}\b");
+                var match = Regex.Match(txt, @"\b(19|20)\d{2}\b");
                 if (match.Success)
                     return int.Parse(match.Value);
             }
 
-            // 3. Si no se encuentra año, devolver 0
             return 0;
         }
-        public string NormalizarRuta(string ruta)
-        {
-            return Path.GetFullPath(ruta)
-                .Replace('/', '\\')
-                .Trim()
-                .ToLowerInvariant();
-        }
+
+        // =====================================================================
+        // METADATOS EN ARCHIVO
+        // =====================================================================
 
         public void ActualizarMetadatosEnArchivo(string ruta, string titulo, string artista, string album, string genero, int anio)
         {
@@ -335,36 +307,48 @@ namespace MusicManager.Data
                 var file = TagLib.File.Create(ruta);
 
                 if (file.Tag == null)
-                {
-                    MessageBox.Show("Este archivo no tiene estructura de etiquetas válida.");
                     return;
-                }
 
-                // ---- TÍTULO ----
+                // --- Actualizar etiquetas ---
                 file.Tag.Title = titulo ?? "";
-
-                // ---- ARTISTA ----
                 file.Tag.Performers = new[] { artista ?? "" };
-
-                // ---- ÁLBUM ----
                 file.Tag.Album = album ?? "";
-
-                // ---- GÉNERO ----
                 file.Tag.Genres = new[] { genero ?? "" };
 
-                // ---- AÑO ----
                 if (anio > 0)
                     file.Tag.Year = (uint)anio;
                 else
                     file.Tag.Year = 0;
 
-                // ---- GUARDAR ----
+                // --- Guardar cambios ---
                 file.Save();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error actualizando metadatos del archivo: " + ex.Message);
             }
+        }
+
+
+        // =====================================================================
+        // LIMPIEZA DE HUÉRFANOS
+        // =====================================================================
+
+        public void LimpiarHuerfanos()
+        {
+            var cmd = conexion.CreateCommand();
+
+            // Álbumes
+            cmd.CommandText = "DELETE FROM album WHERE id_album NOT IN (SELECT id_album FROM cancion)";
+            cmd.ExecuteNonQuery();
+
+            // Artistas
+            cmd.CommandText = "DELETE FROM artista WHERE id_artista NOT IN (SELECT id_artista FROM cancion)";
+            cmd.ExecuteNonQuery();
+
+            // Géneros
+            cmd.CommandText = "DELETE FROM genero WHERE id_genero NOT IN (SELECT id_genero FROM cancion)";
+            cmd.ExecuteNonQuery();
         }
     }
 }

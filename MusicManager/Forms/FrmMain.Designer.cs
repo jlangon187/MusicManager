@@ -32,7 +32,6 @@ namespace MusicManager
         private ToolStripStatusLabel lbConexionDB;
         private ToolStripMenuItem configuraciónToolStripMenuItem;
         private ToolStripMenuItem consolaDeDepuraciónToolStripMenuItem;
-        private Button btnSincronizar;
         private Button btnEditarMetadatos;
         private ToolStripMenuItem configuraciónAPIToolStripMenuItem;
         private ToolStripMenuItem salirDelProgramaToolStripMenuItem;
@@ -41,7 +40,15 @@ namespace MusicManager
         private Panel pnHerramientas;
         private TextBox txtBuscarCancion;
         private Button btnLimpiarBusqueda;
-        private Button btnListasReproduccion;
+        private Panel pnStatusBar;
+        private PictureBox pictureBox1;
+        private DataGridViewTextBoxColumn colTitulo;
+        private DataGridViewTextBoxColumn colArtista;
+        private DataGridViewTextBoxColumn colAlbum;
+        private DataGridViewTextBoxColumn colGenero;
+        private DataGridViewTextBoxColumn colAnno;
+        private DataGridViewTextBoxColumn colRuta;
+        private Button btnSincronizaTodo;
 
         protected override void Dispose(bool disposing)
         {
@@ -52,6 +59,8 @@ namespace MusicManager
 
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             panelReproductor = new Panel();
             lblVolumen = new Label();
@@ -91,13 +100,12 @@ namespace MusicManager
             btnLimpiarBusqueda = new Button();
             panelLateral = new Panel();
             pictureBox1 = new PictureBox();
-            btnSincronizar = new Button();
             btnOrganizar = new Button();
-            btnListasReproduccion = new Button();
             btnDescargarMetadatos = new Button();
             btnEditarMetadatos = new Button();
             btnSeleccionarCarpeta = new Button();
             pnStatusBar = new Panel();
+            btnSincronizaTodo = new Button();
             panelReproductor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackProgreso).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trackVolumen).BeginInit();
@@ -293,9 +301,23 @@ namespace MusicManager
             // dgvCanciones
             // 
             dgvCanciones.AllowUserToAddRows = false;
+            dgvCanciones.AllowUserToDeleteRows = false;
+            dgvCanciones.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(192, 251, 180);
+            dgvCanciones.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgvCanciones.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Window;
+            dataGridViewCellStyle2.SelectionForeColor = Color.Black;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvCanciones.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgvCanciones.ColumnHeadersHeight = 40;
             dgvCanciones.Columns.AddRange(new DataGridViewColumn[] { colTitulo, colArtista, colAlbum, colGenero, colAnno, colRuta });
             dgvCanciones.Dock = DockStyle.Fill;
             dgvCanciones.Location = new Point(10, 10);
+            dgvCanciones.MultiSelect = false;
             dgvCanciones.Name = "dgvCanciones";
             dgvCanciones.ReadOnly = true;
             dgvCanciones.RowHeadersVisible = false;
@@ -306,29 +328,28 @@ namespace MusicManager
             // 
             // colTitulo
             // 
-            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTitulo.FillWeight = 58.3416634F;
             colTitulo.HeaderText = "Título";
             colTitulo.Name = "colTitulo";
             colTitulo.ReadOnly = true;
-            colTitulo.Width = 250;
             // 
             // colArtista
             // 
+            colArtista.FillWeight = 58.3416634F;
             colArtista.HeaderText = "Artista";
             colArtista.Name = "colArtista";
             colArtista.ReadOnly = true;
-            colArtista.Width = 250;
             // 
             // colAlbum
             // 
-            colAlbum.FillWeight = 200F;
+            colAlbum.FillWeight = 43.75625F;
             colAlbum.HeaderText = "Álbum";
             colAlbum.Name = "colAlbum";
             colAlbum.ReadOnly = true;
-            colAlbum.Width = 200;
             // 
             // colGenero
             // 
+            colGenero.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colGenero.HeaderText = "Género";
             colGenero.Name = "colGenero";
             colGenero.ReadOnly = true;
@@ -336,6 +357,7 @@ namespace MusicManager
             // 
             // colAnno
             // 
+            colAnno.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colAnno.HeaderText = "Año";
             colAnno.Name = "colAnno";
             colAnno.ReadOnly = true;
@@ -415,7 +437,7 @@ namespace MusicManager
             // 
             txtBuscarCancion.Location = new Point(10, 4);
             txtBuscarCancion.Name = "txtBuscarCancion";
-            txtBuscarCancion.PlaceholderText = "Buscar canción, artista, álbum...";
+            txtBuscarCancion.PlaceholderText = "Buscar canción, artista, álbum, género, año...";
             txtBuscarCancion.Size = new Size(400, 23);
             txtBuscarCancion.TabIndex = 1;
             txtBuscarCancion.TextChanged += txtBuscarCancion_TextChanged;
@@ -432,10 +454,9 @@ namespace MusicManager
             // panelLateral
             // 
             panelLateral.BackColor = Color.LightGray;
+            panelLateral.Controls.Add(btnSincronizaTodo);
             panelLateral.Controls.Add(pictureBox1);
-            panelLateral.Controls.Add(btnSincronizar);
             panelLateral.Controls.Add(btnOrganizar);
-            panelLateral.Controls.Add(btnListasReproduccion);
             panelLateral.Controls.Add(btnDescargarMetadatos);
             panelLateral.Controls.Add(btnEditarMetadatos);
             panelLateral.Controls.Add(btnSeleccionarCarpeta);
@@ -458,34 +479,15 @@ namespace MusicManager
             pictureBox1.TabIndex = 6;
             pictureBox1.TabStop = false;
             // 
-            // btnSincronizar
-            // 
-            btnSincronizar.Dock = DockStyle.Top;
-            btnSincronizar.Location = new Point(10, 210);
-            btnSincronizar.Name = "btnSincronizar";
-            btnSincronizar.Size = new Size(160, 40);
-            btnSincronizar.TabIndex = 3;
-            btnSincronizar.Text = "Sincronizar BD";
-            btnSincronizar.Click += btnSincronizar_Click;
-            // 
             // btnOrganizar
             // 
             btnOrganizar.Dock = DockStyle.Top;
-            btnOrganizar.Location = new Point(10, 170);
+            btnOrganizar.Location = new Point(10, 130);
             btnOrganizar.Name = "btnOrganizar";
             btnOrganizar.Size = new Size(160, 40);
             btnOrganizar.TabIndex = 0;
             btnOrganizar.Text = "Organizar Música";
             btnOrganizar.Click += btnOrganizar_Click;
-            // 
-            // btnListasReproduccion
-            // 
-            btnListasReproduccion.Dock = DockStyle.Top;
-            btnListasReproduccion.Location = new Point(10, 130);
-            btnListasReproduccion.Name = "btnListasReproduccion";
-            btnListasReproduccion.Size = new Size(160, 40);
-            btnListasReproduccion.TabIndex = 5;
-            btnListasReproduccion.Text = "Listas de Reproducción";
             // 
             // btnDescargarMetadatos
             // 
@@ -526,6 +528,16 @@ namespace MusicManager
             pnStatusBar.Size = new Size(936, 30);
             pnStatusBar.TabIndex = 6;
             // 
+            // btnSincronizaTodo
+            // 
+            btnSincronizaTodo.Dock = DockStyle.Top;
+            btnSincronizaTodo.Location = new Point(10, 210);
+            btnSincronizaTodo.Name = "btnSincronizaTodo";
+            btnSincronizaTodo.Size = new Size(160, 40);
+            btnSincronizaTodo.TabIndex = 7;
+            btnSincronizaTodo.Text = "Sincronizar Todo";
+            btnSincronizaTodo.Click += btnSincronizaTodo_Click;
+            // 
             // FrmMain
             // 
             ClientSize = new Size(1116, 744);
@@ -562,13 +574,6 @@ namespace MusicManager
             pnStatusBar.PerformLayout();
             ResumeLayout(false);
         }
-        private Panel pnStatusBar;
-        private DataGridViewTextBoxColumn colTitulo;
-        private DataGridViewTextBoxColumn colArtista;
-        private DataGridViewTextBoxColumn colAlbum;
-        private DataGridViewTextBoxColumn colGenero;
-        private DataGridViewTextBoxColumn colAnno;
-        private DataGridViewTextBoxColumn colRuta;
-        private PictureBox pictureBox1;
+
     }
 }

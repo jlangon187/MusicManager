@@ -110,6 +110,10 @@
             Controls.Add(lbVersion);
             Controls.Add(gbAcerca);
             Controls.Add(pictureBox1);
+            MaximizeBox = false;
+            MaximumSize = new Size(482, 297);
+            MinimizeBox = false;
+            MinimumSize = new Size(482, 297);
             Name = "frmAcerca";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Acerca de";

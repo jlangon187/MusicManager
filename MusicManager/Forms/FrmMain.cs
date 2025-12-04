@@ -5,12 +5,12 @@ using MusicManager.Modelos;
 using MusicManager.Utils;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using TagLib;
-using TagLib.IFD.Tags;
 using File = System.IO.File;
 using Timer = System.Windows.Forms.Timer;
 
@@ -42,6 +42,15 @@ namespace MusicManager
             timerProgreso.Interval = 200;
             timerProgreso.Tick += TimerProgreso_Tick;
 
+            dgvCanciones.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(131, 189, 87);
+            dgvCanciones.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font(dgvCanciones.Font.FontFamily, 11, System.Drawing.FontStyle.Regular);
+            dgvCanciones.ColumnHeadersHeight = 40;
+            dgvCanciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvCanciones.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(131, 189, 87);
+            dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
+            dgvCanciones.EnableHeadersVisualStyles = false;
+
             RefrescarControles();                                                   // Refrescar controles según el estado
 
             lblReproduciendo.Text = "No se está reproduciendo ninguna canción.";
@@ -59,7 +68,6 @@ namespace MusicManager
         /// <param name="e"></param>
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (Program.appMusic.conectado)
             {
                 var resultado = MessageBox.Show(
@@ -76,8 +84,16 @@ namespace MusicManager
                 else
                 {
                     e.Cancel = true;
+                    return;
                 }
             }
+            try
+            {
+                reproductor?.Stop();
+                reproductor?.Dispose();
+                archivoAudio?.Dispose();
+            }
+            catch { }
         }
 
         private void btnSeleccionarCarpeta_Click(object sender, EventArgs e)
@@ -87,7 +103,8 @@ namespace MusicManager
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     carpetaMusica = dlg.SelectedPath;
-                    CargarCancionesDeCarpeta();
+
+                    SincronizarTodo();
                 }
             }
         }
@@ -99,9 +116,7 @@ namespace MusicManager
             if (!Directory.Exists(carpetaMusica))
                 return;
 
-            var archivos = Directory.GetFiles(carpetaMusica, "*.mp3", SearchOption.AllDirectories);
-
-            foreach (var ruta in archivos)
+            foreach (var ruta in Directory.GetFiles(carpetaMusica, "*.mp3", SearchOption.AllDirectories))
             {
                 try
                 {
@@ -190,7 +205,7 @@ namespace MusicManager
                 archivoAudio?.Dispose();
                 archivoAudio = null;
 
-                lblReproduciendo.Text = "Reproduciendo: (ninguno)";
+                lblReproduciendo.Text = "Reproduciendo: (ninguna)";
                 lblTiempo.Text = "00:00 / 00:00";
 
                 if (trackProgreso != null)
@@ -244,7 +259,9 @@ namespace MusicManager
 
             if (!usuarioMoviendoTrackbar)
             {
-                trackProgreso.Value = (int)archivoAudio.CurrentTime.TotalSeconds;
+                int seg = (int)archivoAudio.CurrentTime.TotalSeconds;
+                if (seg <= trackProgreso.Maximum)
+                    trackProgreso.Value = seg;
             }
 
             lblTiempo.Text =
@@ -321,19 +338,24 @@ namespace MusicManager
 
         private void FiltrarCanciones(string txt)
         {
-            txt = txt.ToLower();
+            string filtro = txt.ToLower();
 
             foreach (DataGridViewRow row in dgvCanciones.Rows)
             {
-                bool visible =
-                    row.Cells["colTitulo"].Value.ToString().ToLower().Contains(txt) ||
-                    row.Cells["colArtista"].Value.ToString().ToLower().Contains(txt) ||
-                    row.Cells["colAlbum"].Value.ToString().ToLower().Contains(txt) ||
-                    row.Cells["colGenero"].Value.ToString().ToLower().Contains(txt) ||
-                    row.Cells["colAnno"].Value.ToString().ToLower().Contains(txt) ||
-                    row.Cells["colRuta"].Value.ToString().ToLower().Contains(txt);
+                if (row.IsNewRow) continue;
 
-                row.Visible = visible;
+                string titulo = row.Cells["colTitulo"].Value.ToString().ToLower();
+                string artista = row.Cells["colArtista"].Value.ToString().ToLower();
+                string album = row.Cells["colAlbum"].Value.ToString().ToLower();
+                string genero = row.Cells["colGenero"].Value.ToString().ToLower();
+                string anno = row.Cells["colAnno"].Value.ToString();
+
+                row.Visible =
+                    titulo.Contains(filtro) ||
+                    artista.Contains(filtro) ||
+                    album.Contains(filtro) ||
+                    genero.Contains(filtro) ||
+                    anno.Contains(filtro);
             }
         }
 
@@ -397,13 +419,21 @@ namespace MusicManager
                 string anno = row.Cells["colAnno"].Value?.ToString() ?? "0";
                 string ruta = row.Cells["colRuta"].Value?.ToString() ?? "";
 
-                ruta = Path.GetFullPath(ruta).Trim().ToLower();
+                ruta = gm.NormalizarRuta(ruta);
 
                 if (!File.Exists(ruta))
                     return;
 
-                var tag = TagLib.File.Create(ruta);
-                string duracion = tag.Properties.Duration.ToString(@"mm\:ss");
+                string duracion = "";
+                try
+                {
+                    var tag = TagLib.File.Create(ruta);
+                    duracion = tag.Properties.Duration.ToString(@"mm\:ss");
+                }
+                catch
+                {
+                    duracion = "00:00";
+                }
 
                 int idArtista = gm.GetOrCreateArtista(artista);
                 int idGenero = gm.GetOrCreateGenero(genero);
@@ -600,50 +630,6 @@ namespace MusicManager
 #endif
         }
 
-        private void btnSincronizar_Click(object sender, EventArgs e)
-        {
-            DetenerReproductorSiActivo();
-
-            if (!Directory.Exists(carpetaMusica))
-            {
-                MessageBox.Show("Selecciona primero la carpeta con tu música.");
-                return;
-            }
-
-            var rutasFisicas = Directory.GetFiles(carpetaMusica, "*.mp3", SearchOption.AllDirectories);
-            var rutasBD = gm.GetTodasLasRutas();
-
-            List<string> nuevas = new();
-            List<string> perdidas = new();
-
-            // Normalizar todo para comparar correctamente
-            var rutasFisicasNorm = rutasFisicas
-                .Select(r => gm.NormalizarRuta(r))
-                .ToHashSet();
-
-            var rutasBDNorm = rutasBD
-                .Select(r => gm.NormalizarRuta(r))
-                .ToHashSet();
-
-            // Detectar canciones nuevas (están en carpeta pero NO en BD)
-            foreach (var rutaFisica in rutasFisicas)
-            {
-                if (!rutasBDNorm.Contains(gm.NormalizarRuta(rutaFisica)))
-                    nuevas.Add(rutaFisica);
-            }
-
-            // Detectar canciones perdidas (están en BD pero NO en carpeta)
-            foreach (var rutaBD in rutasBD)
-            {
-                if (!rutasFisicasNorm.Contains(gm.NormalizarRuta(rutaBD)))
-                    perdidas.Add(rutaBD);
-            }
-
-            // Mostrar ventana de sincronización
-            FrmSincronizar frm = new FrmSincronizar(nuevas, perdidas, gm);
-            frm.ShowDialog();
-        }
-
         private void btnEditarMetadatos_Click(object sender, EventArgs e)
         {
             if (dgvCanciones.CurrentRow == null)
@@ -677,7 +663,7 @@ namespace MusicManager
                     archivoAudio = null;
                 }
 
-                lblReproduciendo.Text = "Reproduciendo: (ninguno)";
+                lblReproduciendo.Text = "Reproduciendo: (ninguna)";
             }
             catch { }
         }
@@ -705,7 +691,8 @@ namespace MusicManager
                     row.Cells["colTitulo"].Value.ToString().ToLower().Contains(filtro) ||
                     row.Cells["colArtista"].Value.ToString().ToLower().Contains(filtro) ||
                     row.Cells["colAlbum"].Value.ToString().ToLower().Contains(filtro) ||
-                    row.Cells["colGenero"].Value.ToString().ToLower().Contains(filtro);
+                    row.Cells["colGenero"].Value.ToString().ToLower().Contains(filtro) ||
+                    row.Cells["colAnno"].Value.ToString().ToLower().Contains(filtro);
 
                 row.Visible = visible;
             }
@@ -714,6 +701,129 @@ namespace MusicManager
         private void btnLimpiarBusqueda_Click(object sender, EventArgs e)
         {
             txtBuscarCancion.Text = "";
+        }
+
+        private void SincronizarTodo()
+        {
+            if (string.IsNullOrEmpty(carpetaMusica) || !Directory.Exists(carpetaMusica))
+            {
+                MessageBox.Show("Selecciona primero una carpeta.");
+                return;
+            }
+
+            List<string> nuevas = new();
+            List<string> actualizadas = new();
+            List<string> eliminadas = new();
+
+            // ============================================================
+            // 1) DETECTAR NUEVAS CANCIONES EN LA CARPETA
+            // ============================================================
+            var rutasFisicas = Directory
+                .GetFiles(carpetaMusica, "*.mp3", SearchOption.AllDirectories)
+                .Select(r => gm.NormalizarRuta(r))
+                .ToList();
+
+            var rutasBD = gm.GetTodasLasRutas()
+                .Select(r => gm.NormalizarRuta(r))
+                .ToList();
+
+            // NUEVAS canciones → están en carpeta pero NO en BD
+            nuevas = rutasFisicas
+                .Except(rutasBD)
+                .ToList();
+
+            foreach (var ruta in nuevas)
+                gm.InsertarCancionDesdeArchivo(ruta);
+
+            // ============================================================
+            // 2) RECORRER TODAS LAS CANCIONES DE LA BD
+            // ============================================================
+
+            var rutasBDactualizadas = gm.GetTodasLasRutas();
+
+            foreach (var rutaOriginal in rutasBDactualizadas)
+            {
+                string ruta = gm.NormalizarRuta(rutaOriginal);
+
+                // 2.1) SI EL ARCHIVO NO EXISTE → eliminar
+                if (!File.Exists(ruta))
+                {
+                    gm.EliminarCancionPorRuta(ruta);
+                    eliminadas.Add(ruta);
+                    continue;
+                }
+
+                // 2.2) LEER METADATOS REALES DEL ARCHIVO
+                TagLib.File tag = null;
+                try
+                {
+                    tag = TagLib.File.Create(ruta);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                string titulo = tag.Tag.Title ?? Path.GetFileNameWithoutExtension(ruta);
+                string artista = tag.Tag.FirstPerformer ?? "Desconocido";
+                string album = tag.Tag.Album ?? "Desconocido";
+                string genero = tag.Tag.FirstGenre ?? "Desconocido";
+                int anio = (int)tag.Tag.Year;
+
+                string duracion = tag.Properties.Duration.ToString(@"mm\:ss");
+
+                int? id = gm.GetCancionPorRuta(ruta);
+                if (id == null)
+                    continue;
+
+                // 2.3) ACTUALIZAR BD
+                int idArtista = gm.GetOrCreateArtista(artista);
+                int idGenero = gm.GetOrCreateGenero(genero);
+                int idAlbum = gm.GetOrCreateAlbum(album, idArtista, anio);
+
+                gm.ActualizarCancion(new Cancion
+                {
+                    id_cancion = id.Value,
+                    titulo = titulo,
+                    duracion = duracion,
+                    id_artista = idArtista,
+                    id_album = idAlbum,
+                    id_genero = idGenero,
+                    anio = anio,
+                    ruta_archivo = ruta
+                });
+
+                actualizadas.Add(ruta);
+            }
+
+            // ============================================================
+            // 3) LIMPIEZA FINAL
+            // ============================================================
+            gm.LimpiarHuerfanos();
+
+            // ============================================================
+            // 4) REFRESCAR UI
+            // ============================================================
+            CargarCancionesDeCarpeta();
+
+            // ============================================================
+            // 5) MOSTRAR RESUMEN
+            // ============================================================
+            MessageBox.Show(
+                $"Sincronización completada:\n\n" +
+                $"Nuevas añadidas: {nuevas.Count}\n" +
+                $"Actualizadas: {actualizadas.Count}\n" +
+                $"Eliminadas: {eliminadas.Count}",
+                "Sincronización completa",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void btnSincronizaTodo_Click(object sender, EventArgs e)
+        {
+            DetenerReproductor();
+            SincronizarTodo();
         }
     }
 }
