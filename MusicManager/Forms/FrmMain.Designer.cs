@@ -96,6 +96,7 @@ namespace MusicManager
             lblDuracionTotal = new ToolStripStatusLabel();
             lblTotalCanciones = new ToolStripStatusLabel();
             pnHerramientas = new Panel();
+            progressBarSync = new ProgressBar();
             txtBuscarCancion = new TextBox();
             btnLimpiarBusqueda = new Button();
             panelLateral = new Panel();
@@ -172,13 +173,13 @@ namespace MusicManager
             // 
             trackVolumen.Anchor = AnchorStyles.Right;
             trackVolumen.AutoSize = false;
+            trackVolumen.Cursor = Cursors.Hand;
             trackVolumen.Location = new Point(1003, 29);
             trackVolumen.Maximum = 100;
             trackVolumen.Name = "trackVolumen";
             trackVolumen.Size = new Size(101, 25);
             trackVolumen.TabIndex = 2;
             trackVolumen.TickStyle = TickStyle.None;
-            trackVolumen.Cursor = Cursors.Hand;
             trackVolumen.Value = 100;
             trackVolumen.ValueChanged += trackVolumen_ValueChanged;
             // 
@@ -425,6 +426,7 @@ namespace MusicManager
             // pnHerramientas
             // 
             pnHerramientas.BackColor = SystemColors.Control;
+            pnHerramientas.Controls.Add(progressBarSync);
             pnHerramientas.Controls.Add(txtBuscarCancion);
             pnHerramientas.Controls.Add(btnLimpiarBusqueda);
             pnHerramientas.Dock = DockStyle.Top;
@@ -433,6 +435,14 @@ namespace MusicManager
             pnHerramientas.Padding = new Padding(10, 5, 10, 5);
             pnHerramientas.Size = new Size(936, 30);
             pnHerramientas.TabIndex = 5;
+            // 
+            // progressBarSync
+            // 
+            progressBarSync.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            progressBarSync.Location = new Point(674, 5);
+            progressBarSync.Name = "progressBarSync";
+            progressBarSync.Size = new Size(250, 20);
+            progressBarSync.TabIndex = 3;
             // 
             // txtBuscarCancion
             // 
@@ -575,6 +585,6 @@ namespace MusicManager
             pnStatusBar.PerformLayout();
             ResumeLayout(false);
         }
-
+        private ProgressBar progressBarSync;
     }
 }

@@ -75,34 +75,67 @@ namespace MusicManager.Data
         // ÁLBUM
         // =====================================================================
 
-        public int GetOrCreateAlbum(string titulo, int idArtista, int anio)
+        public int GetOrCreateAlbum(string titulo, int idArtista, int anio, string portadaUrl = null)
         {
             titulo = NormalizarTexto(titulo);
 
             var cmd = conexion.CreateCommand();
             cmd.CommandText =
-                @"SELECT id_album 
-                  FROM album 
-                  WHERE LOWER(titulo)=LOWER(@t) AND id_artista=@a
-                  LIMIT 1";
+                @"SELECT id_album
+          FROM album
+          WHERE LOWER(titulo)=LOWER(@t)
+          LIMIT 1";
 
             cmd.Parameters.AddWithValue("@t", titulo);
-            cmd.Parameters.AddWithValue("@a", idArtista);
 
             object res = cmd.ExecuteScalar();
-            if (res != null)
-                return Convert.ToInt32(res);
 
+            // ======================================
+            // 1) El álbum YA existe
+            // ======================================
+            if (res != null)
+            {
+                int idAlbum = Convert.ToInt32(res);
+
+                // Actualizar portada solo si viene una URL válida y el álbum no la tiene
+                if (!string.IsNullOrWhiteSpace(portadaUrl))
+                {
+                    var update = conexion.CreateCommand();
+                    update.CommandText =
+                        @"UPDATE album
+                  SET portada=@p
+                  WHERE id_album=@id AND (portada IS NULL OR portada = '')";
+
+                    update.Parameters.AddWithValue("@p", portadaUrl);
+                    update.Parameters.AddWithValue("@id", idAlbum);
+                    update.ExecuteNonQuery();
+                }
+
+                return idAlbum;
+            }
+
+            // ======================================
+            // 2) Crear nuevo álbum
+            // ======================================
             return tabla.Insertar("album",
                 ("titulo", titulo),
                 ("anio_lanzamiento", anio),
-                ("id_artista", idArtista));
+                ("id_artista", idArtista),  // puedes dejarlo, pero ya no es "clave"
+                ("portada", portadaUrl ?? "")
+            );
         }
+
+
 
         // =====================================================================
         // CANCIONES
         // =====================================================================
 
+        /// <summary>
+        /// Metodo que obtiene el ID de una canción por su ruta de archivo.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <returns></returns>
         public int? GetCancionPorRuta(string ruta)
         {
             string rutaNorm = NormalizarRuta(ruta);
@@ -121,6 +154,43 @@ namespace MusicManager.Data
                 return null;
 
             return Convert.ToInt32(res);
+        }
+
+        /// <summary>
+        /// Metodo que obtiene una canción completa por su ruta de archivo.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <returns></returns>
+        public Cancion ObtenerCancionPorRuta(string ruta)
+        {
+            ruta = NormalizarRuta(ruta);
+
+            var cmd = conexion.CreateCommand();
+            cmd.CommandText = @"
+        SELECT id_cancion, titulo, duracion, id_artista, id_album, id_genero, anio, ruta_archivo
+        FROM cancion
+        WHERE ruta_archivo=@ruta
+        LIMIT 1";
+
+            cmd.Parameters.AddWithValue("@ruta", ruta);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Cancion
+                {
+                    id_cancion = reader.GetInt32("id_cancion"),
+                    titulo = reader.GetString("titulo"),
+                    duracion = reader.GetString("duracion"),
+                    id_artista = reader.GetInt32("id_artista"),
+                    id_album = reader.GetInt32("id_album"),
+                    id_genero = reader.GetInt32("id_genero"),
+                    anio = reader.GetInt32("anio"),
+                    ruta_archivo = reader.GetString("ruta_archivo")
+                };
+            }
+
+            return null;
         }
 
         public int InsertarCancion(Cancion c)

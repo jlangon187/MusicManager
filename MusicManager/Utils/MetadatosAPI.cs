@@ -144,18 +144,21 @@ namespace MusicManager.Utils
                         Titulo = r.TryGetProperty("trackName", out var tn) ? tn.GetString() : "",
                         Artista = r.TryGetProperty("artistName", out var ar) ? ar.GetString() : "",
                         Album = r.TryGetProperty("collectionName", out var al) ? al.GetString() : "",
-                        Anio = r.TryGetProperty("releaseDate", out var d)
-                            ? int.Parse(d.GetString().Substring(0, 4))
-                            : 0,
-                        Genero = r.TryGetProperty("primaryGenreName", out var g)
-                            ? g.GetString()
-                            : ""
+                        Anio = r.TryGetProperty("releaseDate", out var d) ? int.Parse(d.GetString().Substring(0, 4)) : 0,
+                        Genero = r.TryGetProperty("primaryGenreName", out var g) ? g.GetString() : "",
+                        PortadaUrl = r.TryGetProperty("artworkUrl100", out var art) ? ConvertirCaratula(art.GetString(), 600) : null
                     });
                 }
             }
             catch { }
 
             return lista;
+        }
+
+        private static string ConvertirCaratula(string url, int size = 600)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return null;
+            return url.Replace("100x100", $"{size}x{size}");
         }
 
 
@@ -223,6 +226,7 @@ namespace MusicManager.Utils
             public string Album { get; set; }
             public int Anio { get; set; }
             public string Genero { get; set; }
+            public string PortadaUrl { get; set; }
 
             public override string ToString()
             {
