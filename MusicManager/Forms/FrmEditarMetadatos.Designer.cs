@@ -15,7 +15,6 @@
         private System.Windows.Forms.TextBox txtTitulo;
         private System.Windows.Forms.TextBox txtArtista;
         private System.Windows.Forms.TextBox txtAlbum;
-        private System.Windows.Forms.TextBox txtGenero;
         private System.Windows.Forms.TextBox txtAnio;
         private System.Windows.Forms.TextBox txtDuracion;
         private System.Windows.Forms.TextBox txtRuta;
@@ -35,132 +34,216 @@
 
         private void InitializeComponent()
         {
-            this.lblTitulo = new System.Windows.Forms.Label();
-            this.lblArtista = new System.Windows.Forms.Label();
-            this.lblAlbum = new System.Windows.Forms.Label();
-            this.lblGenero = new System.Windows.Forms.Label();
-            this.lblAnio = new System.Windows.Forms.Label();
-            this.lblDuracion = new System.Windows.Forms.Label();
-            this.lblRuta = new System.Windows.Forms.Label();
-
-            this.txtTitulo = new System.Windows.Forms.TextBox();
-            this.txtArtista = new System.Windows.Forms.TextBox();
-            this.txtAlbum = new System.Windows.Forms.TextBox();
-            this.txtGenero = new System.Windows.Forms.TextBox();
-            this.txtAnio = new System.Windows.Forms.TextBox();
-            this.txtDuracion = new System.Windows.Forms.TextBox();
-            this.txtRuta = new System.Windows.Forms.TextBox();
-
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnCancelar = new System.Windows.Forms.Button();
-
-            this.SuspendLayout();
-
-            // ===========================================================
-            // Labels
-            // ===========================================================
-
-            this.lblTitulo.Text = "Título:";
-            this.lblTitulo.Location = new System.Drawing.Point(20, 20);
-            this.lblTitulo.AutoSize = true;
-
-            this.lblArtista.Text = "Artista:";
-            this.lblArtista.Location = new System.Drawing.Point(20, 60);
-            this.lblArtista.AutoSize = true;
-
-            this.lblAlbum.Text = "Álbum:";
-            this.lblAlbum.Location = new System.Drawing.Point(20, 100);
-            this.lblAlbum.AutoSize = true;
-
-            this.lblGenero.Text = "Género:";
-            this.lblGenero.Location = new System.Drawing.Point(20, 140);
-            this.lblGenero.AutoSize = true;
-
-            this.lblAnio.Text = "Año:";
-            this.lblAnio.Location = new System.Drawing.Point(20, 180);
-            this.lblAnio.AutoSize = true;
-
-            this.lblDuracion.Text = "Duración:";
-            this.lblDuracion.Location = new System.Drawing.Point(20, 220);
-            this.lblDuracion.AutoSize = true;
-
-            this.lblRuta.Text = "Ruta del archivo:";
-            this.lblRuta.Location = new System.Drawing.Point(20, 260);
-            this.lblRuta.AutoSize = true;
-
-            // ===========================================================
-            // TextBoxes
-            // ===========================================================
-
-            this.txtTitulo.Location = new System.Drawing.Point(150, 18);
-            this.txtTitulo.Size = new System.Drawing.Size(300, 23);
-
-            this.txtArtista.Location = new System.Drawing.Point(150, 58);
-            this.txtArtista.Size = new System.Drawing.Size(300, 23);
-
-            this.txtAlbum.Location = new System.Drawing.Point(150, 98);
-            this.txtAlbum.Size = new System.Drawing.Size(300, 23);
-
-            this.txtGenero.Location = new System.Drawing.Point(150, 138);
-            this.txtGenero.Size = new System.Drawing.Size(300, 23);
-
-            this.txtAnio.Location = new System.Drawing.Point(150, 178);
-            this.txtAnio.Size = new System.Drawing.Size(100, 23);
-
-            this.txtDuracion.Location = new System.Drawing.Point(150, 218);
-            this.txtDuracion.Size = new System.Drawing.Size(100, 23);
-            this.txtDuracion.ReadOnly = true;
-
-            this.txtRuta.Location = new System.Drawing.Point(150, 258);
-            this.txtRuta.Size = new System.Drawing.Size(480, 23);
-            this.txtRuta.ReadOnly = true;
-
-            // ===========================================================
-            // Buttons
-            // ===========================================================
-
-            this.btnGuardar.Text = "Guardar cambios";
-            this.btnGuardar.Location = new System.Drawing.Point(150, 300);
-            this.btnGuardar.Size = new System.Drawing.Size(150, 32);
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
-
-            this.btnCancelar.Text = "Cancelar";
-            this.btnCancelar.Location = new System.Drawing.Point(320, 300);
-            this.btnCancelar.Size = new System.Drawing.Size(120, 32);
-            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
-
-            // ===========================================================
-            // Form
-            // ===========================================================
-
-            this.ClientSize = new System.Drawing.Size(660, 360);
-            this.Controls.Add(this.lblTitulo);
-            this.Controls.Add(this.lblArtista);
-            this.Controls.Add(this.lblAlbum);
-            this.Controls.Add(this.lblGenero);
-            this.Controls.Add(this.lblAnio);
-            this.Controls.Add(this.lblDuracion);
-            this.Controls.Add(this.lblRuta);
-
-            this.Controls.Add(this.txtTitulo);
-            this.Controls.Add(this.txtArtista);
-            this.Controls.Add(this.txtAlbum);
-            this.Controls.Add(this.txtGenero);
-            this.Controls.Add(this.txtAnio);
-            this.Controls.Add(this.txtDuracion);
-            this.Controls.Add(this.txtRuta);
-
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.btnCancelar);
-
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Text = "Editar Metadatos";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-
-            this.Load += new System.EventHandler(this.FrmEditarMetadatos_Load);
-
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            lblTitulo = new Label();
+            lblArtista = new Label();
+            lblAlbum = new Label();
+            lblGenero = new Label();
+            lblAnio = new Label();
+            lblDuracion = new Label();
+            lblRuta = new Label();
+            txtTitulo = new TextBox();
+            txtArtista = new TextBox();
+            txtAlbum = new TextBox();
+            txtAnio = new TextBox();
+            txtDuracion = new TextBox();
+            txtRuta = new TextBox();
+            btnGuardar = new Button();
+            btnCancelar = new Button();
+            pbPortada = new PictureBox();
+            btnAdd = new Button();
+            cbGenero = new ComboBox();
+            ((System.ComponentModel.ISupportInitialize)pbPortada).BeginInit();
+            SuspendLayout();
+            // 
+            // lblTitulo
+            // 
+            lblTitulo.AutoSize = true;
+            lblTitulo.Location = new Point(20, 20);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(41, 15);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "Título:";
+            // 
+            // lblArtista
+            // 
+            lblArtista.AutoSize = true;
+            lblArtista.Location = new Point(20, 60);
+            lblArtista.Name = "lblArtista";
+            lblArtista.Size = new Size(44, 15);
+            lblArtista.TabIndex = 1;
+            lblArtista.Text = "Artista:";
+            // 
+            // lblAlbum
+            // 
+            lblAlbum.AutoSize = true;
+            lblAlbum.Location = new Point(20, 100);
+            lblAlbum.Name = "lblAlbum";
+            lblAlbum.Size = new Size(46, 15);
+            lblAlbum.TabIndex = 2;
+            lblAlbum.Text = "Álbum:";
+            // 
+            // lblGenero
+            // 
+            lblGenero.AutoSize = true;
+            lblGenero.Location = new Point(20, 140);
+            lblGenero.Name = "lblGenero";
+            lblGenero.Size = new Size(48, 15);
+            lblGenero.TabIndex = 3;
+            lblGenero.Text = "Género:";
+            // 
+            // lblAnio
+            // 
+            lblAnio.AutoSize = true;
+            lblAnio.Location = new Point(20, 180);
+            lblAnio.Name = "lblAnio";
+            lblAnio.Size = new Size(32, 15);
+            lblAnio.TabIndex = 4;
+            lblAnio.Text = "Año:";
+            // 
+            // lblDuracion
+            // 
+            lblDuracion.AutoSize = true;
+            lblDuracion.Location = new Point(20, 220);
+            lblDuracion.Name = "lblDuracion";
+            lblDuracion.Size = new Size(58, 15);
+            lblDuracion.TabIndex = 5;
+            lblDuracion.Text = "Duración:";
+            // 
+            // lblRuta
+            // 
+            lblRuta.AutoSize = true;
+            lblRuta.Location = new Point(20, 260);
+            lblRuta.Name = "lblRuta";
+            lblRuta.Size = new Size(95, 15);
+            lblRuta.TabIndex = 6;
+            lblRuta.Text = "Ruta del archivo:";
+            // 
+            // txtTitulo
+            // 
+            txtTitulo.Location = new Point(150, 18);
+            txtTitulo.Name = "txtTitulo";
+            txtTitulo.Size = new Size(300, 23);
+            txtTitulo.TabIndex = 7;
+            // 
+            // txtArtista
+            // 
+            txtArtista.Location = new Point(150, 58);
+            txtArtista.Name = "txtArtista";
+            txtArtista.Size = new Size(300, 23);
+            txtArtista.TabIndex = 8;
+            // 
+            // txtAlbum
+            // 
+            txtAlbum.Location = new Point(150, 98);
+            txtAlbum.Name = "txtAlbum";
+            txtAlbum.Size = new Size(300, 23);
+            txtAlbum.TabIndex = 9;
+            // 
+            // txtAnio
+            // 
+            txtAnio.Location = new Point(150, 178);
+            txtAnio.Name = "txtAnio";
+            txtAnio.Size = new Size(100, 23);
+            txtAnio.TabIndex = 11;
+            txtAnio.KeyPress += txtAnio_KeyPress;
+            // 
+            // txtDuracion
+            // 
+            txtDuracion.Location = new Point(150, 218);
+            txtDuracion.Name = "txtDuracion";
+            txtDuracion.ReadOnly = true;
+            txtDuracion.Size = new Size(100, 23);
+            txtDuracion.TabIndex = 12;
+            // 
+            // txtRuta
+            // 
+            txtRuta.Location = new Point(150, 258);
+            txtRuta.Name = "txtRuta";
+            txtRuta.ReadOnly = true;
+            txtRuta.Size = new Size(480, 23);
+            txtRuta.TabIndex = 13;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(150, 300);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(150, 32);
+            btnGuardar.TabIndex = 14;
+            btnGuardar.Text = "Guardar cambios";
+            btnGuardar.Click += btnGuardar_Click;
+            // 
+            // btnCancelar
+            // 
+            btnCancelar.Location = new Point(320, 300);
+            btnCancelar.Name = "btnCancelar";
+            btnCancelar.Size = new Size(120, 32);
+            btnCancelar.TabIndex = 15;
+            btnCancelar.Text = "Cancelar";
+            btnCancelar.Click += btnCancelar_Click;
+            // 
+            // pbPortada
+            // 
+            pbPortada.Location = new Point(462, 17);
+            pbPortada.Name = "pbPortada";
+            pbPortada.Size = new Size(185, 185);
+            pbPortada.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbPortada.TabIndex = 16;
+            pbPortada.TabStop = false;
+            // 
+            // btnAdd
+            // 
+            btnAdd.Location = new Point(320, 139);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(60, 23);
+            btnAdd.TabIndex = 17;
+            btnAdd.Text = "Nuevo";
+            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.Click += btnAdd_Click;
+            // 
+            // cbGenero
+            // 
+            cbGenero.FormattingEnabled = true;
+            cbGenero.Location = new Point(150, 140);
+            cbGenero.Name = "cbGenero";
+            cbGenero.Size = new Size(164, 23);
+            cbGenero.TabIndex = 18;
+            // 
+            // FrmEditarMetadatos
+            // 
+            ClientSize = new Size(660, 360);
+            Controls.Add(cbGenero);
+            Controls.Add(btnAdd);
+            Controls.Add(pbPortada);
+            Controls.Add(lblTitulo);
+            Controls.Add(lblArtista);
+            Controls.Add(lblAlbum);
+            Controls.Add(lblGenero);
+            Controls.Add(lblAnio);
+            Controls.Add(lblDuracion);
+            Controls.Add(lblRuta);
+            Controls.Add(txtTitulo);
+            Controls.Add(txtArtista);
+            Controls.Add(txtAlbum);
+            Controls.Add(txtAnio);
+            Controls.Add(txtDuracion);
+            Controls.Add(txtRuta);
+            Controls.Add(btnGuardar);
+            Controls.Add(btnCancelar);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MaximumSize = new Size(676, 399);
+            MinimizeBox = false;
+            MinimumSize = new Size(676, 399);
+            Name = "FrmEditarMetadatos";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Editar Metadatos";
+            Load += FrmEditarMetadatos_Load;
+            ((System.ComponentModel.ISupportInitialize)pbPortada).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
+        private PictureBox pbPortada;
+        private Button btnAdd;
+        private ComboBox cbGenero;
     }
 }

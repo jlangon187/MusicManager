@@ -17,6 +17,7 @@ namespace MusicManager.Forms
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmConsola));
             txtConsola = new TextBox();
             btnActualizar = new Button();
             chkAutoActualizar = new CheckBox();
@@ -60,6 +61,7 @@ namespace MusicManager.Forms
             Controls.Add(chkAutoActualizar);
             Controls.Add(btnActualizar);
             Controls.Add(txtConsola);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FrmConsola";
             Text = "Consola de depuración";
             ResumeLayout(false);

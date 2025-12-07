@@ -193,6 +193,22 @@ namespace MusicManager.Data
             return null;
         }
 
+        /// <summary>
+        /// Metodo que obtiene la portada de un álbum por su ID.
+        /// </summary>
+        /// <param name="idAlbum"></param>
+        /// <returns></returns>
+        public string ObtenerPortadaAlbum(int idAlbum)
+        {
+            var cmd = conexion.CreateCommand();
+            cmd.CommandText = "SELECT portada FROM album WHERE id_album=@id LIMIT 1";
+            cmd.Parameters.AddWithValue("@id", idAlbum);
+
+            object res = cmd.ExecuteScalar();
+            return res?.ToString();
+        }
+
+
         public int InsertarCancion(Cancion c)
         {
             return tabla.Insertar("cancion",
@@ -276,7 +292,7 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
-        public void InsertarCancionDesdeArchivo(string ruta)
+        public void InsertarCancionDesdeArchivo(string ruta, string portadaUrl = "")
         {
             if (!File.Exists(ruta))
                 return;
@@ -307,7 +323,9 @@ namespace MusicManager.Data
 
             int idArtista = GetOrCreateArtista(artista);
             int idGenero = GetOrCreateGenero(genero);
-            int idAlbum = GetOrCreateAlbum(album, idArtista, anio);
+
+            // Ahora GetOrCreateAlbum admite la portada (aunque esté vacía)
+            int idAlbum = GetOrCreateAlbum(album, idArtista, anio, portadaUrl);
 
             InsertarCancion(new Cancion
             {
@@ -419,6 +437,19 @@ namespace MusicManager.Data
             // Géneros
             cmd.CommandText = "DELETE FROM genero WHERE id_genero NOT IN (SELECT id_genero FROM cancion)";
             cmd.ExecuteNonQuery();
+        }
+
+        internal IEnumerable<object> ObtenerTodosGeneros()
+        {
+            var generos = new List<string>();
+            var cmd = conexion.CreateCommand();
+            cmd.CommandText = "SELECT nombre FROM genero ORDER BY nombre ASC";
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                generos.Add(reader.GetString("nombre"));
+            }
+            return generos;
         }
     }
 }

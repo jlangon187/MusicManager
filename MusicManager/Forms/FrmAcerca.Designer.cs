@@ -32,7 +32,7 @@
             pictureBox1 = new PictureBox();
             gbAcerca = new GroupBox();
             lbAcerca = new Label();
-            linkLabel1 = new LinkLabel();
+            lblPayPal = new LinkLabel();
             pictureBox2 = new PictureBox();
             lbVersion = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -43,9 +43,9 @@
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(18, 51);
+            pictureBox1.Location = new Point(12, 17);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(160, 166);
+            pictureBox1.Size = new Size(200, 200);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -53,9 +53,9 @@
             // gbAcerca
             // 
             gbAcerca.Controls.Add(lbAcerca);
-            gbAcerca.Controls.Add(linkLabel1);
+            gbAcerca.Controls.Add(lblPayPal);
             gbAcerca.Controls.Add(pictureBox2);
-            gbAcerca.Location = new Point(198, 51);
+            gbAcerca.Location = new Point(215, 37);
             gbAcerca.Name = "gbAcerca";
             gbAcerca.Size = new Size(239, 166);
             gbAcerca.TabIndex = 1;
@@ -72,21 +72,21 @@
             lbAcerca.TabIndex = 2;
             lbAcerca.Text = "Javier Lanzas González";
             // 
-            // linkLabel1
+            // lblPayPal
             // 
-            linkLabel1.AutoSize = true;
-            linkLabel1.Location = new Point(44, 135);
-            linkLabel1.Name = "linkLabel1";
-            linkLabel1.Size = new Size(157, 15);
-            linkLabel1.TabIndex = 1;
-            linkLabel1.TabStop = true;
-            linkLabel1.Text = "Ayúdame con una donación";
-            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            lblPayPal.AutoSize = true;
+            lblPayPal.Location = new Point(44, 135);
+            lblPayPal.Name = "lblPayPal";
+            lblPayPal.Size = new Size(157, 15);
+            lblPayPal.TabIndex = 1;
+            lblPayPal.TabStop = true;
+            lblPayPal.Text = "Ayúdame con una donación";
+            lblPayPal.LinkClicked += linkLabel1_LinkClicked;
             // 
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(87, 70);
+            pictureBox2.Location = new Point(87, 62);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(60, 62);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -110,6 +110,7 @@
             Controls.Add(lbVersion);
             Controls.Add(gbAcerca);
             Controls.Add(pictureBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(482, 297);
             MinimizeBox = false;
@@ -131,7 +132,7 @@
         private PictureBox pictureBox1;
         private GroupBox gbAcerca;
         private PictureBox pictureBox2;
-        private LinkLabel linkLabel1;
+        private LinkLabel lblPayPal;
         private Label lbAcerca;
         private Label lbVersion;
     }

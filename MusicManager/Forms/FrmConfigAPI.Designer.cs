@@ -4,12 +4,15 @@
     {
         private System.ComponentModel.IContainer components = null;
 
-        private Label lblTitulo;
-        private GroupBox gpItunes;
-        private CheckBox chkItunes;
+        private Label lblTituloItunes;
         private Button btnTestItunes;
-        private Button btnGuardar;
-        private Label lblEstado;
+        private Label lblEstadoItunes;
+
+        private Label lblTituloSpotify;
+        private Button btnTestSpotify;
+        private Label lblEstadoSpotify;
+
+        private Button btnClose;
 
         protected override void Dispose(bool disposing)
         {
@@ -20,84 +23,101 @@
 
         private void InitializeComponent()
         {
-            lblTitulo = new Label();
-            gpItunes = new GroupBox();
-            chkItunes = new CheckBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmConfigAPI));
+            lblTituloItunes = new Label();
             btnTestItunes = new Button();
-            btnGuardar = new Button();
-            lblEstado = new Label();
-            gpItunes.SuspendLayout();
+            lblEstadoItunes = new Label();
+            lblTituloSpotify = new Label();
+            btnTestSpotify = new Button();
+            lblEstadoSpotify = new Label();
+            btnClose = new Button();
             SuspendLayout();
             // 
-            // lblTitulo
+            // lblTituloItunes
             // 
-            lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTitulo.Location = new Point(20, 15);
-            lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(337, 25);
-            lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "Configuración de APIs de Metadatos";
-            // 
-            // gpItunes
-            // 
-            gpItunes.Controls.Add(chkItunes);
-            gpItunes.Location = new Point(20, 60);
-            gpItunes.Name = "gpItunes";
-            gpItunes.Size = new Size(360, 70);
-            gpItunes.TabIndex = 1;
-            gpItunes.TabStop = false;
-            gpItunes.Text = "iTunes Search API";
-            // 
-            // chkItunes
-            // 
-            chkItunes.AutoSize = true;
-            chkItunes.Location = new Point(20, 30);
-            chkItunes.Name = "chkItunes";
-            chkItunes.Size = new Size(108, 19);
-            chkItunes.TabIndex = 0;
-            chkItunes.Text = "Usar iTunes API";
+            lblTituloItunes.AutoSize = true;
+            lblTituloItunes.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblTituloItunes.Location = new Point(30, 20);
+            lblTituloItunes.Name = "lblTituloItunes";
+            lblTituloItunes.Size = new Size(202, 21);
+            lblTituloItunes.TabIndex = 0;
+            lblTituloItunes.Text = "Comprobar API de iTunes";
             // 
             // btnTestItunes
             // 
-            btnTestItunes.Location = new Point(400, 75);
+            btnTestItunes.Location = new Point(65, 75);
             btnTestItunes.Name = "btnTestItunes";
-            btnTestItunes.Size = new Size(130, 35);
+            btnTestItunes.Size = new Size(130, 30);
             btnTestItunes.TabIndex = 2;
             btnTestItunes.Text = "Probar iTunes";
             btnTestItunes.Click += btnTestItunes_Click;
             // 
-            // btnGuardar
+            // lblEstadoItunes
             // 
-            btnGuardar.Location = new Point(227, 177);
-            btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(130, 40);
-            btnGuardar.TabIndex = 3;
-            btnGuardar.Text = "Guardar";
-            btnGuardar.Click += btnGuardar_Click;
+            lblEstadoItunes.AutoSize = true;
+            lblEstadoItunes.ForeColor = Color.DimGray;
+            lblEstadoItunes.Location = new Point(30, 50);
+            lblEstadoItunes.Name = "lblEstadoItunes";
+            lblEstadoItunes.Size = new Size(230, 15);
+            lblEstadoItunes.TabIndex = 1;
+            lblEstadoItunes.Text = "Pulsa para comprobar el estado de iTunes.";
             // 
-            // lblEstado
+            // lblTituloSpotify
             // 
-            lblEstado.AutoSize = true;
-            lblEstado.ForeColor = Color.DimGray;
-            lblEstado.Location = new Point(24, 140);
-            lblEstado.Name = "lblEstado";
-            lblEstado.Size = new Size(0, 15);
-            lblEstado.TabIndex = 4;
+            lblTituloSpotify.AutoSize = true;
+            lblTituloSpotify.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblTituloSpotify.Location = new Point(30, 130);
+            lblTituloSpotify.Name = "lblTituloSpotify";
+            lblTituloSpotify.Size = new Size(208, 21);
+            lblTituloSpotify.TabIndex = 3;
+            lblTituloSpotify.Text = "Comprobar API de Spotify";
+            // 
+            // btnTestSpotify
+            // 
+            btnTestSpotify.Location = new Point(65, 185);
+            btnTestSpotify.Name = "btnTestSpotify";
+            btnTestSpotify.Size = new Size(130, 30);
+            btnTestSpotify.TabIndex = 5;
+            btnTestSpotify.Text = "Probar Spotify";
+            btnTestSpotify.Click += btnTestSpotify_Click;
+            // 
+            // lblEstadoSpotify
+            // 
+            lblEstadoSpotify.AutoSize = true;
+            lblEstadoSpotify.ForeColor = Color.DimGray;
+            lblEstadoSpotify.Location = new Point(30, 160);
+            lblEstadoSpotify.Name = "lblEstadoSpotify";
+            lblEstadoSpotify.Size = new Size(232, 15);
+            lblEstadoSpotify.TabIndex = 4;
+            lblEstadoSpotify.Text = "Pulsa para comprobar el estado de Spotify.";
+            // 
+            // btnClose
+            // 
+            btnClose.Location = new Point(260, 230);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(130, 35);
+            btnClose.TabIndex = 6;
+            btnClose.Text = "Cerrar";
+            btnClose.Click += btnClose_Click;
             // 
             // FrmConfigAPI
             // 
-            ClientSize = new Size(580, 229);
-            Controls.Add(lblTitulo);
-            Controls.Add(gpItunes);
+            ClientSize = new Size(430, 290);
+            Controls.Add(lblTituloItunes);
+            Controls.Add(lblEstadoItunes);
             Controls.Add(btnTestItunes);
-            Controls.Add(btnGuardar);
-            Controls.Add(lblEstado);
+            Controls.Add(lblTituloSpotify);
+            Controls.Add(lblEstadoSpotify);
+            Controls.Add(btnTestSpotify);
+            Controls.Add(btnClose);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MaximumSize = new Size(446, 329);
+            MinimizeBox = false;
+            MinimumSize = new Size(446, 329);
             Name = "FrmConfigAPI";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Configuración de APIs";
-            gpItunes.ResumeLayout(false);
-            gpItunes.PerformLayout();
+            Text = "Estado de las APIs";
             ResumeLayout(false);
             PerformLayout();
         }

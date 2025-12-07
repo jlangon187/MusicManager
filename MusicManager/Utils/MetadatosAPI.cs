@@ -13,71 +13,28 @@ namespace MusicManager.Utils
         private static readonly HttpClient http = new HttpClient();
 
         // =============================================
-        // CONFIGURACIÓN GLOBAL DE API
+        // CONFIGURACIÓN GLOBAL
         // =============================================
 
-        private const string CONFIG_API_FILE = "config_api.json";
+        public static string SpotifyClientId = "1c9d3a11c5284bb997ab40efbe4d4f0c";
+        public static string SpotifyClientSecret = "ad0e63504a794a97939566b0fdf5b860";
 
-        public static bool UsarITunes { get; private set; } = true;
+        // Activar/desactivar fuentes
+        public static bool UsarSpotify = true;
+        public static bool UsarITunes = true;
+
+        // Caching token Spotify
+        private static string SpotifyToken = "";
+        private static DateTime SpotifyTokenExpira = DateTime.MinValue;
 
 
-        // =====================================================
-        //      Constructor estático → carga configuración
-        // =====================================================
+        // =============================================
+        //    CONSTRUCTOR ESTÁTICO
+        // =============================================
         static MetadatosAPI()
         {
             http.DefaultRequestHeaders.UserAgent.Clear();
             http.DefaultRequestHeaders.UserAgent.ParseAdd("MusicManager/1.0 (contacto@ejemplo.com)");
-            CargarConfiguracionAPIs();
-        }
-
-        // =====================================================
-        //      CARGAR / GUARDAR CONFIGURACIÓN JSON
-        // =====================================================
-        private class ApiConfigJson
-        {
-            public bool usar_itunes { get; set; }
-        }
-
-        public static void CargarConfiguracionAPIs()
-        {
-            if (!File.Exists(CONFIG_API_FILE))
-            {
-                GuardarConfiguracionAPIs(); // crear archivo inicial
-                return;
-            }
-
-            try
-            {
-                var json = File.ReadAllText(CONFIG_API_FILE);
-                var cfg = JsonSerializer.Deserialize<ApiConfigJson>(json);
-
-                if (cfg != null)
-                {
-                    UsarITunes = cfg.usar_itunes;
-                }
-            }
-            catch
-            {
-                UsarITunes = true;
-            }
-        }
-
-        public static void GuardarConfiguracionAPIs()
-        {
-            var cfg = new ApiConfigJson
-            {
-                usar_itunes = UsarITunes
-            };
-
-            File.WriteAllText(CONFIG_API_FILE,
-                JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
-        public static void ConfigurarUsoAPIs(bool itunes)
-        {
-            UsarITunes = itunes;
-            GuardarConfiguracionAPIs();
         }
 
         // =====================================================
@@ -93,10 +50,70 @@ namespace MusicManager.Utils
             catch { return false; }
         }
 
+        // =====================================================
+        //         PRUEBA DE CONEXIÓN SPOTIFY
+        // =====================================================
+        public static async Task<bool> ProbarConexionSpotify()
+        {
+            try
+            {
+                // Obtener token (si falla, Spotify está offline o credenciales malas)
+                string token = await ObtenerTokenSpotify();
 
-        // =====================================================
-        //                SISTEMA HÍBRIDO
-        // =====================================================
+                // Hacemos una petición real pero muy ligera
+                var req = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "https://api.spotify.com/v1/search?q=test&type=track&limit=1"
+                );
+
+                req.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var resp = await http.SendAsync(req);
+                return resp.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        // =============================================
+        //             SPOTIFY TOKEN
+        // =============================================
+        private static async Task<string> ObtenerTokenSpotify()
+        {
+            if (!string.IsNullOrEmpty(SpotifyToken) && DateTime.Now < SpotifyTokenExpira)
+                return SpotifyToken;
+
+            string auth = Convert.ToBase64String(
+                System.Text.Encoding.UTF8.GetBytes($"{SpotifyClientId}:{SpotifyClientSecret}")
+            );
+
+            var req = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
+            req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", auth);
+            req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["grant_type"] = "client_credentials"
+            });
+
+            var resp = await http.SendAsync(req);
+            string json = await resp.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(json);
+            SpotifyToken = doc.RootElement.GetProperty("access_token").GetString();
+            int expires = doc.RootElement.GetProperty("expires_in").GetInt32();
+
+            SpotifyTokenExpira = DateTime.Now.AddSeconds(expires - 30);
+            return SpotifyToken;
+        }
+
+
+        // =============================================
+        //      SISTEMA HÍBRIDO (UNIFICADO)
+        // =============================================
+
         public static async Task<MetadataResult> BuscarMetadatos(string titulo, string artista)
         {
             var lista = await BuscarLista(titulo, artista);
@@ -105,48 +122,92 @@ namespace MusicManager.Utils
 
         public static async Task<List<MetadataResult>> BuscarLista(string titulo, string artista)
         {
-            List<MetadataResult> total = new();
+            List<MetadataResult> resultados = new();
 
-            if (UsarITunes)
+            // Spotify
+            if (UsarSpotify)
             {
-                var apple = await BuscarITunes(titulo, artista);
-                if (apple.Count > 0)
-                    total.AddRange(apple);
+                var spot = await BuscarSpotify(titulo, artista);
+                resultados.AddRange(spot);
             }
 
-            return OrdenarPorRelevancia(total, titulo, artista);
+            // iTunes
+            if (UsarITunes)
+            {
+                var itunes = await BuscarITunes(titulo, artista);
+                resultados.AddRange(itunes);
+            }
+
+            // Quitar duplicados (título + artista)
+            resultados = resultados
+                .GroupBy(r => (r.Titulo.ToLower(), r.Artista.ToLower()))
+                .Select(g => g.First())
+                .ToList();
+
+            return resultados;
         }
 
 
-        // =====================================================
-        //                 API: ITUNES
-        // =====================================================
-        private static async Task<List<MetadataResult>> BuscarITunes(string titulo, string artista)
+        // =============================================
+        //              BÚSQUEDA SPOTIFY
+        // =============================================
+
+        private static async Task<List<MetadataResult>> BuscarSpotify(string titulo, string artista)
         {
             List<MetadataResult> lista = new();
 
             try
             {
-                string q = $"{titulo} {artista}";
-                string url =
-                    $"https://itunes.apple.com/search?entity=song&limit=25&term={Uri.EscapeDataString(q)}";
+                string token = await ObtenerTokenSpotify();
+                string q = Uri.EscapeDataString($"{titulo} {artista}");
+                string url = $"https://api.spotify.com/v1/search?q={q}&type=track&limit=20";
 
-                string json = await http.GetStringAsync(url);
+                var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var resp = await http.SendAsync(req);
+                string json = await resp.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
 
-                if (!doc.RootElement.TryGetProperty("results", out var results))
-                    return lista;
+                var tracks = doc.RootElement
+                    .GetProperty("tracks")
+                    .GetProperty("items");
 
-                foreach (var r in results.EnumerateArray())
+                foreach (var item in tracks.EnumerateArray())
                 {
+                    string tituloReal = item.GetProperty("name").GetString();
+                    string artistaReal = item.GetProperty("artists")[0].GetProperty("name").GetString();
+                    string artistId = item.GetProperty("artists")[0].GetProperty("id").GetString();
+                    string albumReal = item.GetProperty("album").GetProperty("name").GetString();
+
+                    // portada
+                    var imgs = item.GetProperty("album").GetProperty("images");
+                    string portada = imgs.GetArrayLength() > 0
+                        ? imgs[0].GetProperty("url").GetString()
+                        : "";
+
+                    // año
+                    int anio = 0;
+                    if (item.GetProperty("album").TryGetProperty("release_date", out var fecha))
+                    {
+                        string f = fecha.GetString();
+                        if (f.Length >= 4) anio = int.Parse(f.Substring(0, 4));
+                    }
+
+                    // género
+                    var generos = await ObtenerGenerosSpotify(artistId, token);
+                    string generoFinal = generos.FirstOrDefault() ?? "";
+
                     lista.Add(new MetadataResult
                     {
-                        Titulo = r.TryGetProperty("trackName", out var tn) ? tn.GetString() : "",
-                        Artista = r.TryGetProperty("artistName", out var ar) ? ar.GetString() : "",
-                        Album = r.TryGetProperty("collectionName", out var al) ? al.GetString() : "",
-                        Anio = r.TryGetProperty("releaseDate", out var d) ? int.Parse(d.GetString().Substring(0, 4)) : 0,
-                        Genero = r.TryGetProperty("primaryGenreName", out var g) ? g.GetString() : "",
-                        PortadaUrl = r.TryGetProperty("artworkUrl100", out var art) ? ConvertirCaratula(art.GetString(), 600) : null
+                        Titulo = tituloReal,
+                        Artista = artistaReal,
+                        Album = albumReal,
+                        Anio = anio,
+                        Genero = generoFinal,
+                        PortadaUrl = portada,
+                        Fuente = "Spotify"
                     });
                 }
             }
@@ -155,12 +216,91 @@ namespace MusicManager.Utils
             return lista;
         }
 
-        private static string ConvertirCaratula(string url, int size = 600)
+
+        // =============================================
+        //      OBTENER GÉNEROS DEL ARTISTA (SPOTIFY)
+        // =============================================
+
+        private static async Task<List<string>> ObtenerGenerosSpotify(string artistId, string token)
         {
-            if (string.IsNullOrWhiteSpace(url)) return null;
-            return url.Replace("100x100", $"{size}x{size}");
+            try
+            {
+                string url = $"https://api.spotify.com/v1/artists/{artistId}";
+
+                var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var resp = await http.SendAsync(req);
+                string json = await resp.Content.ReadAsStringAsync();
+
+                using var doc = JsonDocument.Parse(json);
+                var genres = doc.RootElement.GetProperty("genres");
+
+                return genres.EnumerateArray().Select(g => g.GetString()).ToList();
+            }
+            catch
+            {
+                return new List<string>();
+            }
         }
 
+
+        // =============================================
+        //                BÚSQUEDA ITUNES
+        // =============================================
+
+        private static async Task<List<MetadataResult>> BuscarITunes(string titulo, string artista)
+        {
+            List<MetadataResult> lista = new();
+
+            try
+            {
+                string q = Uri.EscapeDataString($"{titulo} {artista}");
+                string url = $"https://itunes.apple.com/search?term={q}&entity=song&limit=20";
+
+                var resp = await http.GetStringAsync(url);
+                using var doc = JsonDocument.Parse(resp);
+
+                var results = doc.RootElement.GetProperty("results");
+
+                foreach (var item in results.EnumerateArray())
+                {
+                    string tituloReal = item.GetProperty("trackName").GetString();
+                    string artistaReal = item.GetProperty("artistName").GetString();
+                    string albumReal = item.TryGetProperty("collectionName", out var alb)
+                        ? alb.GetString()
+                        : "";
+
+                    int anio = 0;
+                    if (item.TryGetProperty("releaseDate", out var fecha))
+                        anio = fecha.GetDateTime().Year;
+
+                    // portada → convertir 100x100 a 600x600
+                    string portada = item.TryGetProperty("artworkUrl100", out var art)
+                        ? ConvertirCaratula(art.GetString(), 600)
+                        : "";
+
+                    string genero = item.TryGetProperty("primaryGenreName", out var gen)
+                        ? gen.GetString()
+                        : "";
+
+                    lista.Add(new MetadataResult
+                    {
+                        Titulo = tituloReal,
+                        Artista = artistaReal,
+                        Album = albumReal,
+                        Anio = anio,
+                        Genero = genero,
+                        PortadaUrl = portada,
+                        Fuente = "iTunes"
+                    });
+                }
+            }
+            catch { }
+
+            return lista;
+        }
 
         // =====================================================
         //            PARSEAR BUSQUEDA
@@ -191,34 +331,21 @@ namespace MusicManager.Utils
         }
 
 
-        // =====================================================
-        //            ORDENACIÓN POR RELEVANCIA
-        // =====================================================
-        private static string Normalizar(string s)
-        {
-            if (string.IsNullOrWhiteSpace(s)) return "";
-            return s.ToLower()
-                .Replace("á", "a").Replace("é", "e").Replace("í", "i")
-                .Replace("ó", "o").Replace("ú", "u").Replace("ñ", "n");
-        }
+        // =============================================
+        //      UTILIDADES
+        // =============================================
 
-        private static List<MetadataResult> OrdenarPorRelevancia(
-            List<MetadataResult> lista, string titulo, string artista)
+        private static string ConvertirCaratula(string url, int size)
         {
-            string t = Normalizar(titulo);
-            string a = Normalizar(artista);
-
-            return lista
-                .OrderByDescending(r => Normalizar(r.Artista) == a)
-                .ThenByDescending(r => Normalizar(r.Titulo) == t)
-                .ThenByDescending(r => Normalizar(r.Titulo).Contains(t))
-                .ToList();
+            if (string.IsNullOrWhiteSpace(url)) return url;
+            return url.Replace("100x100", $"{size}x{size}");
         }
 
 
-        // =====================================================
-        //                MODELO RESULTADO
-        // =====================================================
+        // =============================================
+        //          MODELO RESULTADO
+        // =============================================
+
         public class MetadataResult
         {
             public string Titulo { get; set; }
@@ -227,10 +354,11 @@ namespace MusicManager.Utils
             public int Anio { get; set; }
             public string Genero { get; set; }
             public string PortadaUrl { get; set; }
+            public string Fuente { get; set; }
 
             public override string ToString()
             {
-                return $"{Artista} - {Titulo} ({Album}, {Anio}) [{Genero}]";
+                return $"{Artista} - {Titulo} ({Album}, {Anio}) [{Genero}] ({Fuente})";
             }
         }
     }

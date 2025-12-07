@@ -13,21 +13,24 @@ namespace MusicManager.Forms
 {
     public partial class frmAcerca : Form
     {
+        // Constructor
         public frmAcerca()
         {
             InitializeComponent();
         }
 
+        // Evento Load
         private void frmAcerca_Load(object sender, EventArgs e)
         {
-            linkLabel1.Text = "Ayúdame con una donación";
-            linkLabel1.Links.Clear();
-            linkLabel1.Links.Add(0, linkLabel1.Text.Length, "https://www.paypal.com/es/home");
+            lblPayPal.Text = "Ayúdame con una donación";
+            lblPayPal.Links.Clear();
+            lblPayPal.Links.Add(0, lblPayPal.Text.Length, "https://www.paypal.com/es/home");
         }
 
+        // Evento LinkClicked
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            linkLabel1.LinkVisited = true;
+            lblPayPal.LinkVisited = true;
 
             try
             {
