@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicManager.Modelos
+namespace MusicManager.Utils
 {
     public class Validacion
     {

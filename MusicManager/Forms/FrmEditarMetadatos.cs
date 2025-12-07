@@ -1,5 +1,4 @@
-﻿using MusicManager.Modelos;
-using MusicManager.Data;
+﻿using MusicManager.Data;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -10,11 +9,10 @@ namespace MusicManager.Forms
 {
     public partial class FrmEditarMetadatos : Form
     {
-        private readonly GestorMusica gestor;
-        private readonly DataGridViewRow row;
-
-        private string ruta;
-        private TagLib.File tag;
+        private readonly GestorMusica gestor;                   // Gestor de música para operaciones relacionadas con la música
+        private readonly DataGridViewRow row;                   // Fila del DataGridView que contiene la canción a editar
+        private string ruta;                                    // Ruta del archivo de música
+        private TagLib.File tag;                                // Objeto TagLib para manipular los metadatos del archivo de música
 
         public FrmEditarMetadatos(DataGridViewRow row, GestorMusica gestor)
         {
@@ -23,11 +21,16 @@ namespace MusicManager.Forms
             this.gestor = gestor;
         }
 
+        /// <summary>
+        /// Evento Load del formulario para cargar los metadatos de la canción
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmEditarMetadatos_Load(object sender, EventArgs e)
         {
             try
             {
-                cbGenero.DropDownStyle = ComboBoxStyle.DropDownList;
+                cbGenero.DropDownStyle = ComboBoxStyle.DropDownList;            // Establecer estilo del ComboBox de género
 
                 ruta = row.Cells["colRuta"].Value.ToString();
                 txtRuta.Text = ruta;
@@ -54,9 +57,7 @@ namespace MusicManager.Forms
                     cbGenero.Text = string.Empty;
                 }
 
-
                 txtAnio.Text = tag.Tag.Year.ToString();
-
                 txtDuracion.Text = tag.Properties.Duration.ToString(@"mm\:ss");
                 MostrarPortadaSeleccionada();
             }
@@ -66,6 +67,9 @@ namespace MusicManager.Forms
             }
         }
 
+        /// <summary>
+        /// Muestra la portada del álbum seleccionada
+        /// </summary>
         private void MostrarPortadaSeleccionada()
         {
             if (txtAlbum == null)
@@ -84,7 +88,7 @@ namespace MusicManager.Forms
 
             if (string.IsNullOrWhiteSpace(portadaUrl))
             {
-                pbPortada.Image = null; // No hay portada
+                pbPortada.Image = null;
                 return;
             }
 
@@ -105,11 +109,15 @@ namespace MusicManager.Forms
             }
         }
 
+        /// <summary>
+        /// Evento Click del botón Guardar para actualizar los metadatos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                // === GUARDAR EN ARCHIVO ===
                 // Validar campos obligatorios
                 if (Validacion.ValidarCampoObligatorio(txtTitulo.Text, "Título", out string mensajeError) == false)
                 {
@@ -129,6 +137,7 @@ namespace MusicManager.Forms
                     txtAlbum.Text = "Desconocido";
                     return;
                 }
+
                 tag.Tag.Album = txtAlbum.Text;
                 tag.Tag.Genres = new[] { cbGenero.Text };
 
@@ -143,7 +152,6 @@ namespace MusicManager.Forms
                 }
                 tag.Save();
 
-                // === GUARDAR EN BD ===
                 int idArtista = gestor.GetOrCreateArtista(txtArtista.Text);
                 int idGenero = gestor.GetOrCreateGenero(cbGenero.Text);
                 int idAlbum = gestor.GetOrCreateAlbum(txtAlbum.Text, idArtista, int.Parse(txtAnio.Text));
@@ -167,7 +175,6 @@ namespace MusicManager.Forms
                 else
                     gestor.ActualizarCancion(c);
 
-                // === ACTUALIZAR GRID ===
                 row.Cells["colTitulo"].Value = txtTitulo.Text;
                 row.Cells["colArtista"].Value = txtArtista.Text;
                 row.Cells["colAlbum"].Value = txtAlbum.Text;
@@ -183,19 +190,27 @@ namespace MusicManager.Forms
             }
         }
 
+        /// <summary>
+        /// Meneja el evento Click del botón Cancelar para cerrar el formulario sin guardar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
+        /// <summary>
+        /// Maneja la validación para que el campo Año solo acepte dígitos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtAnio_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Permitir tecla de borrar (Backspace)
             if (char.IsControl(e.KeyChar))
                 return;
 
-            // Permitir solo dígitos
             if (!char.IsDigit(e.KeyChar))
                 e.Handled = true;
         }

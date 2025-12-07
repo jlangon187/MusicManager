@@ -7,6 +7,7 @@ namespace MusicManager.Utils
 {
     public static class Organizador
     {
+        // Limpiar nombres de carpetas y archivos
         public static string LimpiarNombre(string texto)
         {
             if (string.IsNullOrWhiteSpace(texto))
@@ -18,12 +19,7 @@ namespace MusicManager.Utils
             return texto;
         }
 
-        // Mantener nombre original
-        public static string ObtenerNombreArchivoOriginal(string ruta)
-        {
-            return Path.GetFileName(ruta);
-        }
-
+        // Obtener carpeta destino según el modo seleccionado
         public static string ObtenerCarpetaDestino(string basePath,
             string artista, string album, string genero, string anio, int modo)
         {
@@ -40,78 +36,6 @@ namespace MusicManager.Utils
                 4 => Path.Combine(basePath, artista, anio, album),
                 _ => basePath
             };
-        }
-
-        public class ResultadoOrganizacion
-        {
-            public string RutaActual { get; set; }
-            public string RutaNueva { get; set; }
-            public string Archivo { get; set; }
-            public string Estado { get; set; } // Movido, Sin cambios, Conflicto, Error
-        }
-
-        public static ResultadoOrganizacion Previsualizar(
-            string ruta,
-            string carpetaBase,
-            string titulo,
-            string artista,
-            string album,
-            string genero,
-            string anio,
-            int modo)
-        {
-            var r = new ResultadoOrganizacion();
-
-            try
-            {
-                r.RutaActual = ruta;
-                r.Archivo = ObtenerNombreArchivoOriginal(ruta);
-
-                string carpetaDestino = ObtenerCarpetaDestino(
-                    carpetaBase, artista, album, genero, anio, modo);
-
-                r.RutaNueva = Path.Combine(carpetaDestino, r.Archivo);
-
-                if (r.RutaActual.Equals(r.RutaNueva, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    r.Estado = "Sin cambios";
-                    return r;
-                }
-
-                if (File.Exists(r.RutaNueva))
-                {
-                    r.Estado = "Conflicto";
-                    return r;
-                }
-
-                r.Estado = "Movido";
-            }
-            catch
-            {
-                r.Estado = "Error";
-            }
-
-            return r;
-        }
-
-        public static bool Aplicar(ResultadoOrganizacion r)
-        {
-            if (r.Estado != "Movido")
-                return false;
-
-            try
-            {
-                string carpeta = Path.GetDirectoryName(r.RutaNueva);
-                if (!Directory.Exists(carpeta))
-                    Directory.CreateDirectory(carpeta);
-
-                File.Move(r.RutaActual, r.RutaNueva);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }

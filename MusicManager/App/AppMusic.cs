@@ -1,4 +1,6 @@
-﻿using MusicManager.Modelos;
+﻿using MusicManager.App;
+using MusicManager.Modelos;
+using MusicManager.Utils;
 using MySql.Data.MySqlClient;
 using System;
 using System.Diagnostics;

@@ -33,11 +33,13 @@ namespace MusicManager.Forms
             CargarLog();
         }
 
+        // Actualizar manualmente el log
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             CargarLog();
         }
 
+        // Cambiar modo de actualización automática
         private void chkAutoActualizar_CheckedChanged(object sender, EventArgs e)
         {
             bool auto = chkAutoActualizar.Checked;
@@ -49,6 +51,7 @@ namespace MusicManager.Forms
                 timerAutoRefresh.Stop();
         }
 
+        // Cargar el contenido del log en el TextBox
         private void CargarLog()
         {
             try

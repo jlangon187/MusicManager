@@ -1,5 +1,4 @@
-﻿
-namespace MusicManager.Modelos
+﻿namespace MusicManager.App
 {
     public class ConfiguracionConexion
     {

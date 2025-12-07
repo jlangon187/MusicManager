@@ -10,14 +10,10 @@ namespace MusicManager.Utils
 {
     public static class MetadatosAPI
     {
-        private static readonly HttpClient http = new HttpClient();
+        private static readonly HttpClient http = new HttpClient();                         // Cliente HTTP compartido
 
-        // =============================================
-        // CONFIGURACIÓN GLOBAL
-        // =============================================
-
-        public static string SpotifyClientId = "1c9d3a11c5284bb997ab40efbe4d4f0c";
-        public static string SpotifyClientSecret = "ad0e63504a794a97939566b0fdf5b860";
+        public static string SpotifyClientId = "1c9d3a11c5284bb997ab40efbe4d4f0c";          // Credenciales de la aplicación Spotify  
+        public static string SpotifyClientSecret = "ad0e63504a794a97939566b0fdf5b860";      // (usar las propias en producción)
 
         // Activar/desactivar fuentes
         public static bool UsarSpotify = true;
@@ -27,19 +23,19 @@ namespace MusicManager.Utils
         private static string SpotifyToken = "";
         private static DateTime SpotifyTokenExpira = DateTime.MinValue;
 
-
-        // =============================================
-        //    CONSTRUCTOR ESTÁTICO
-        // =============================================
+        /// <summary>
+        /// Constructor estático para inicializar el cliente HTTP.
+        /// </summary>
         static MetadatosAPI()
         {
             http.DefaultRequestHeaders.UserAgent.Clear();
             http.DefaultRequestHeaders.UserAgent.ParseAdd("MusicManager/1.0 (contacto@ejemplo.com)");
         }
 
-        // =====================================================
-        //       PRUEBA DE CONEXIÓN ITUNES
-        // =====================================================
+        /// <summary>
+        /// Método para probar la conexión a iTunes.
+        /// </summary>
+        /// <returns>Retorna true si la conexión es exitosa, false en caso contrario.</returns>
         public static async Task<bool> ProbarConexionITunes()
         {
             try
@@ -50,9 +46,10 @@ namespace MusicManager.Utils
             catch { return false; }
         }
 
-        // =====================================================
-        //         PRUEBA DE CONEXIÓN SPOTIFY
-        // =====================================================
+        /// <summary>
+        /// Metodo para probar la conexión a Spotify.
+        /// </summary>
+        /// <returns>Retorna true si la conexión es exitosa, false en caso contrario.</returns>
         public static async Task<bool> ProbarConexionSpotify()
         {
             try
@@ -60,7 +57,7 @@ namespace MusicManager.Utils
                 // Obtener token (si falla, Spotify está offline o credenciales malas)
                 string token = await ObtenerTokenSpotify();
 
-                // Hacemos una petición real pero muy ligera
+                // Hacemos una petición real
                 var req = new HttpRequestMessage(
                     HttpMethod.Get,
                     "https://api.spotify.com/v1/search?q=test&type=track&limit=1"
@@ -78,10 +75,10 @@ namespace MusicManager.Utils
             }
         }
 
-
-        // =============================================
-        //             SPOTIFY TOKEN
-        // =============================================
+        /// <summary>
+        /// Método para obtener un token de acceso de Spotify.
+        /// </summary>
+        /// <returns>Retorna el token de acceso como una cadena.</returns>
         private static async Task<string> ObtenerTokenSpotify()
         {
             if (!string.IsNullOrEmpty(SpotifyToken) && DateTime.Now < SpotifyTokenExpira)
@@ -109,17 +106,12 @@ namespace MusicManager.Utils
             return SpotifyToken;
         }
 
-
-        // =============================================
-        //      SISTEMA HÍBRIDO (UNIFICADO)
-        // =============================================
-
-        public static async Task<MetadataResult> BuscarMetadatos(string titulo, string artista)
-        {
-            var lista = await BuscarLista(titulo, artista);
-            return lista.FirstOrDefault();
-        }
-
+        /// <summary>
+        /// Metodo principal para buscar metadatos en las fuentes activadas.
+        /// </summary>
+        /// <param name="titulo"></param>
+        /// <param name="artista"></param>
+        /// <returns>Retorna una lista de resultados de metadatos.</returns>
         public static async Task<List<MetadataResult>> BuscarLista(string titulo, string artista)
         {
             List<MetadataResult> resultados = new();
@@ -147,11 +139,12 @@ namespace MusicManager.Utils
             return resultados;
         }
 
-
-        // =============================================
-        //              BÚSQUEDA SPOTIFY
-        // =============================================
-
+        /// <summary>
+        /// Metodo para buscar metadatos en Spotify.
+        /// </summary>
+        /// <param name="titulo"></param>
+        /// <param name="artista"></param>
+        /// <returns>Retorna una lista de resultados de metadatos.</returns>
         private static async Task<List<MetadataResult>> BuscarSpotify(string titulo, string artista)
         {
             List<MetadataResult> lista = new();
@@ -216,11 +209,12 @@ namespace MusicManager.Utils
             return lista;
         }
 
-
-        // =============================================
-        //      OBTENER GÉNEROS DEL ARTISTA (SPOTIFY)
-        // =============================================
-
+        /// <summary>
+        /// Metodo para obtener los géneros de un artista en Spotify ya que no vienen en la búsqueda de pistas.
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <param name="token"></param>
+        /// <returns>Retorna una lista de géneros.</returns>
         private static async Task<List<string>> ObtenerGenerosSpotify(string artistId, string token)
         {
             try
@@ -245,11 +239,12 @@ namespace MusicManager.Utils
             }
         }
 
-
-        // =============================================
-        //                BÚSQUEDA ITUNES
-        // =============================================
-
+        /// <summary>
+        /// Metodo para buscar metadatos en iTunes.
+        /// </summary>
+        /// <param name="titulo"></param>
+        /// <param name="artista"></param>
+        /// <returns>Retorna una lista de resultados de metadatos.</returns>
         private static async Task<List<MetadataResult>> BuscarITunes(string titulo, string artista)
         {
             List<MetadataResult> lista = new();
@@ -302,9 +297,11 @@ namespace MusicManager.Utils
             return lista;
         }
 
-        // =====================================================
-        //            PARSEAR BUSQUEDA
-        // =====================================================
+        /// <summary>
+        /// Método para parsear una cadena de búsqueda en título y artista.
+        /// </summary>
+        /// <param name="texto"></param>
+        /// <returns>Retorna una tupla con (título, artista).</returns>
         public static (string titulo, string artista) ParsearBusqueda(string texto)
         {
             texto = texto.Trim();
@@ -330,22 +327,21 @@ namespace MusicManager.Utils
             return (texto, "");
         }
 
-
-        // =============================================
-        //      UTILIDADES
-        // =============================================
-
+        /// <summary>
+        /// Metodo para convertir la URL de la carátula de iTunes a un tamaño específico.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="size"></param>
+        /// <returns>Retorna la URL modificada.</returns>
         private static string ConvertirCaratula(string url, int size)
         {
             if (string.IsNullOrWhiteSpace(url)) return url;
             return url.Replace("100x100", $"{size}x{size}");
         }
 
-
-        // =============================================
-        //          MODELO RESULTADO
-        // =============================================
-
+        /// <summary>
+        /// Modelo para representar un resultado de metadatos.
+        /// </summary>
         public class MetadataResult
         {
             public string Titulo { get; set; }

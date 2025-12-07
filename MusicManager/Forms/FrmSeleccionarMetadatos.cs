@@ -8,8 +8,8 @@ namespace MusicManager
 {
     public partial class FrmSeleccionarMetadatos : Form
     {
-        public List<MetadataResult> resultados = new List<MetadataResult>();
-        public MetadataResult Seleccionado { get; private set; }
+        public List<MetadataResult> resultados = new List<MetadataResult>();        // Lista de resultados actuales
+        public MetadataResult Seleccionado { get; private set; }                    // Resultado seleccionado por el usuario
 
         public FrmSeleccionarMetadatos(List<MetadataResult> lista)
         {
@@ -17,23 +17,25 @@ namespace MusicManager
             resultados = lista;
         }
 
-
-        // =====================================================
-        //  LOAD DEL FORMULARIO
-        // =====================================================
+        /// <summary>
+        /// Evento Load del formulario
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmSeleccionarMetadatos_Load(object sender, EventArgs e)
         {
-            // Sincronizar con configuración actual de la API
-            chkSpotify.Checked = MetadatosAPI.UsarSpotify;
+            // Configurar opciones iniciales
+            chkSpotify.Checked = MetadatosAPI.UsarSpotify;          
             chkITunes.Checked = MetadatosAPI.UsarITunes;
 
+            // Cargar resultados iniciales
             CargarResultadosEnGrid(resultados);
         }
 
-
-        // =====================================================
-        //  CARGAR RESULTADOS EN GRID
-        // =====================================================
+        /// <summary>
+        /// Método para cargar una lista de resultados en el DataGridView
+        /// </summary>
+        /// <param name="lista"></param>
         private void CargarResultadosEnGrid(List<MetadataResult> lista)
         {
             dgvResultados.Rows.Clear();
@@ -52,10 +54,11 @@ namespace MusicManager
             tsStatusLabel.Text = $"Mostrando {lista.Count} resultados.";
         }
 
-
-        // =====================================================
-        //  BUSCAR MANUALMENTE
-        // =====================================================
+        /// <summary>
+        /// Evento Click del botón Buscar que inicia la búsqueda de metadatos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnBuscar_Click(object sender, EventArgs e)
         {
             string texto = txtBusqueda.Text.Trim();
@@ -107,10 +110,11 @@ namespace MusicManager
             CargarResultadosEnGrid(resultados);
         }
 
-
-        // =====================================================
-        //  ACEPTAR SELECCIÓN
-        // =====================================================
+        /// <summary>
+        /// Evento Click del botón Aceptar que confirma la selección
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             if (dgvResultados.CurrentRow == null)
@@ -129,16 +133,20 @@ namespace MusicManager
             }
         }
 
-
-        // =====================================================
-        //  CANCELAR
-        // =====================================================
+        /// <summary>
+        /// Evento Click del botón Cancelar que cierra el formulario sin seleccionar nada
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
+        /// <summary>
+        /// Método para desactivar los controles del formulario durante la búsqueda
+        /// </summary>
         private void DesactivarControles()
         {
             pnControles.Enabled = false;
@@ -146,6 +154,9 @@ namespace MusicManager
             pnOpciones.Enabled = false;
         }
 
+        /// <summary>
+        /// Metodo para activar los controles del formulario después de la búsqueda
+        /// </summary>
         private void ActivarControles()
         {
             pnControles.Enabled = true;

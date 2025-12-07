@@ -1,4 +1,4 @@
-﻿namespace MusicManager.Modelos
+﻿namespace MusicManager.App
 {
     public class ApiConfig
     {

@@ -9,17 +9,24 @@ namespace MusicManager.Forms
 {
     public partial class FrmOrganizarMusica : Form
     {
-        private DataGridView grid;
-        private string carpetaBase;
+        private DataGridView grid;                                      // Referencia al DataGridView con las canciones
+        private string carpetaBase;                                     // Carpeta base para organizar la música
 
-        public int ModoSeleccionado => cbModo.SelectedIndex + 1;
+        public int ModoSeleccionado => cbModo.SelectedIndex + 1;        // Modo seleccionado (1 a 4)   
 
+        /// <summary>
+        /// Constructor del formulario de organización de música.
+        /// </summary>
+        /// <param name="dgv"></param>
+        /// <param name="carpeta"></param>
         public FrmOrganizarMusica(DataGridView dgv, string carpeta)
         {
             InitializeComponent();
 
-            grid = dgv;
-            carpetaBase = carpeta;
+            grid = dgv;                     // Asignar referencia al DataGridView
+            carpetaBase = carpeta;          // Asignar carpeta base
+
+            // Configurar ComboBox con modos de organización
 
             cbModo.Items.Add("1. Artista / Álbum");
             cbModo.Items.Add("2. Género / Año");
@@ -28,14 +35,23 @@ namespace MusicManager.Forms
 
             cbModo.SelectedIndex = 0;
 
+            // Actualizar vista previa inicial
             ActualizarVistaPrevia();
         }
 
+        /// <summary>
+        /// Manejador del evento de cambio de selección en el ComboBox de modos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbModo_SelectedIndexChanged(object sender, EventArgs e)
         {
             ActualizarVistaPrevia();
         }
 
+        /// <summary>
+        /// Método para actualizar la vista previa de las rutas antigua y nueva.
+        /// </summary>
         private void ActualizarVistaPrevia()
         {
             if (grid.Rows.Count == 0)
@@ -77,6 +93,12 @@ namespace MusicManager.Forms
 
         }
 
+        /// <summary>
+        /// Método para recortar una ruta de archivo y mostrar solo los últimos niveles.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <param name="niveles"></param>
+        /// <returns></returns>
         public static string RecortarRuta(string ruta, int niveles = 3)
         {
             if (string.IsNullOrWhiteSpace(ruta))
@@ -91,12 +113,22 @@ namespace MusicManager.Forms
             return $"...{Path.DirectorySeparatorChar}{final}";
         }
 
+        /// <summary>
+        /// Evento del botón Aceptar para confirmar la organización.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             Close();
         }
 
+        /// <summary>
+        /// Evento del botón Cerrar para cancelar la organización.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             Close();

@@ -12,6 +12,7 @@ namespace MusicManager.Forms
             InitializeComponent();
         }
 
+        // Eventos de los botones de prueba de conexión
         private async void btnTestItunes_Click(object sender, EventArgs e)
         {
             lblEstadoItunes.Text = "Probando conexión iTunes...";
@@ -23,6 +24,7 @@ namespace MusicManager.Forms
             lblEstadoItunes.ForeColor = ok ? Color.Green : Color.Red;
         }
 
+        // Eventos de los botones de prueba de conexión
         private async void btnTestSpotify_Click(object sender, EventArgs e)
         {
             lblEstadoSpotify.Text = "Probando conexión Spotify...";
@@ -34,6 +36,7 @@ namespace MusicManager.Forms
             lblEstadoSpotify.ForeColor = ok ? Color.Green : Color.Red;
         }
 
+        // Evento del botón Guardar
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();

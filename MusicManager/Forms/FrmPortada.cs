@@ -17,11 +17,13 @@ namespace MusicManager.Forms
             InitializeComponent();
         }
 
+        // Establece la imagen de la portada en el PictureBox
         internal void SetImagen(Image image)
         {
             pbPortada.Image = image;
         }
 
+        // Cierra el formulario al hacer clic en el PictureBox
         private void pbPortada_Click(object sender, EventArgs e)
         {
             this.Close();

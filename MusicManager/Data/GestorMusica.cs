@@ -11,19 +11,24 @@ namespace MusicManager.Data
 {
     public class GestorMusica
     {
-        private readonly MySqlConnection conexion;
-        private readonly Tabla tabla;
+        private readonly MySqlConnection conexion;          // Conexión a la base de datos MySQL
+        private readonly Tabla tabla;                       // Instancia de la clase Tabla para operaciones comunes
 
+        /// <summary>
+        /// Constructor de la clase GestorMusica.
+        /// </summary>
+        /// <param name="conexion"></param>
         public GestorMusica(MySqlConnection conexion)
         {
             this.conexion = conexion;
             this.tabla = new Tabla(conexion);
         }
 
-        // =====================================================================
-        // NORMALIZADORES
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que normaliza un texto para comparaciones.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns>Retorna el texto normalizado.</returns>
         public static string NormalizarTexto(string s)
         {
             if (string.IsNullOrWhiteSpace(s))
@@ -33,6 +38,11 @@ namespace MusicManager.Data
                     .ToLowerInvariant();
         }
 
+        /// <summary>
+        /// Metodo que normaliza una ruta de archivo para comparaciones.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <returns>Retorna la ruta normalizada.</returns>
         public string NormalizarRuta(string ruta)
         {
             return Path.GetFullPath(ruta)
@@ -41,10 +51,11 @@ namespace MusicManager.Data
                 .ToLowerInvariant();
         }
 
-        // =====================================================================
-        // ARTISTA
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que obtiene o crea un artista por su nombre.
+        /// </summary>
+        /// <param name="nombre"></param>
+        /// <returns>Retorna el ID del artista.</returns>
         public int GetOrCreateArtista(string nombre)
         {
             string normal = NormalizarTexto(nombre);
@@ -56,10 +67,11 @@ namespace MusicManager.Data
             return tabla.Insertar("artista", ("nombre", nombre.Trim()));
         }
 
-        // =====================================================================
-        // GÉNERO
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que obtiene o crea un género por su nombre.
+        /// </summary>
+        /// <param name="nombre"></param>
+        /// <returns>Retorna el ID del género.</returns>
         public int GetOrCreateGenero(string nombre)
         {
             nombre = NormalizarTexto(nombre);
@@ -71,10 +83,14 @@ namespace MusicManager.Data
             return tabla.Insertar("genero", ("nombre", nombre));
         }
 
-        // =====================================================================
-        // ÁLBUM
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que obtiene o crea un álbum por su título.
+        /// </summary>
+        /// <param name="titulo"></param>
+        /// <param name="idArtista"></param>
+        /// <param name="anio"></param>
+        /// <param name="portadaUrl"></param>
+        /// <returns>Retorna el ID del álbum.</returns>
         public int GetOrCreateAlbum(string titulo, int idArtista, int anio, string portadaUrl = null)
         {
             titulo = NormalizarTexto(titulo);
@@ -90,9 +106,6 @@ namespace MusicManager.Data
 
             object res = cmd.ExecuteScalar();
 
-            // ======================================
-            // 1) El álbum YA existe
-            // ======================================
             if (res != null)
             {
                 int idAlbum = Convert.ToInt32(res);
@@ -114,28 +127,20 @@ namespace MusicManager.Data
                 return idAlbum;
             }
 
-            // ======================================
-            // 2) Crear nuevo álbum
-            // ======================================
+            // Insertar nuevo álbum
             return tabla.Insertar("album",
                 ("titulo", titulo),
                 ("anio_lanzamiento", anio),
-                ("id_artista", idArtista),  // puedes dejarlo, pero ya no es "clave"
+                ("id_artista", idArtista),
                 ("portada", portadaUrl ?? "")
             );
         }
-
-
-
-        // =====================================================================
-        // CANCIONES
-        // =====================================================================
 
         /// <summary>
         /// Metodo que obtiene el ID de una canción por su ruta de archivo.
         /// </summary>
         /// <param name="ruta"></param>
-        /// <returns></returns>
+        /// <returns>Retorna el ID de la canción o null si no existe.</returns>
         public int? GetCancionPorRuta(string ruta)
         {
             string rutaNorm = NormalizarRuta(ruta);
@@ -160,7 +165,7 @@ namespace MusicManager.Data
         /// Metodo que obtiene una canción completa por su ruta de archivo.
         /// </summary>
         /// <param name="ruta"></param>
-        /// <returns></returns>
+        /// <returns>Retorna la canción o null si no existe.</returns>
         public Cancion ObtenerCancionPorRuta(string ruta)
         {
             ruta = NormalizarRuta(ruta);
@@ -197,7 +202,7 @@ namespace MusicManager.Data
         /// Metodo que obtiene la portada de un álbum por su ID.
         /// </summary>
         /// <param name="idAlbum"></param>
-        /// <returns></returns>
+        /// <returns>Retorna la URL de la portada del álbum.</returns>
         public string ObtenerPortadaAlbum(int idAlbum)
         {
             var cmd = conexion.CreateCommand();
@@ -208,7 +213,11 @@ namespace MusicManager.Data
             return res?.ToString();
         }
 
-
+        /// <summary>
+        /// Metodo que inserta una nueva canción en la base de datos.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns>Retorna el ID de la canción insertada.</returns>
         public int InsertarCancion(Cancion c)
         {
             return tabla.Insertar("cancion",
@@ -222,6 +231,10 @@ namespace MusicManager.Data
             );
         }
 
+        /// <summary>
+        /// Metodo que actualiza los datos de una canción existente.
+        /// </summary>
+        /// <param name="c"></param>
         public void ActualizarCancion(Cancion c)
         {
             var cmd = conexion.CreateCommand();
@@ -247,6 +260,11 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Metodo que actualiza la ruta de archivo de una canción.
+        /// </summary>
+        /// <param name="rutaAntigua"></param>
+        /// <param name="rutaNueva"></param>
         public void ActualizarRutaCancion(string rutaAntigua, string rutaNueva)
         {
             var cmd = conexion.CreateCommand();
@@ -261,12 +279,10 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
-        // =====================================================================
-        // SINCRONIZACIÓN
-        // =====================================================================
-
-
-
+        /// <summary>
+        /// Metodo que obtiene todas las rutas de archivo de las canciones.
+        /// </summary>
+        /// <returns>Retorna una lista de rutas de archivo.</returns>
         public List<string> GetTodasLasRutas()
         {
             List<string> rutas = new();
@@ -283,6 +299,10 @@ namespace MusicManager.Data
             return rutas;
         }
 
+        /// <summary>
+        /// Metodo que elimina una canción por su ruta de archivo.
+        /// </summary>
+        /// <param name="ruta"></param>
         public void EliminarCancionPorRuta(string ruta)
         {
             var cmd = conexion.CreateCommand();
@@ -292,6 +312,11 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Metodo que inserta una canción en la base de datos leyendo sus metadatos desde el archivo.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <param name="portadaUrl"></param>
         public void InsertarCancionDesdeArchivo(string ruta, string portadaUrl = "")
         {
             if (!File.Exists(ruta))
@@ -324,7 +349,6 @@ namespace MusicManager.Data
             int idArtista = GetOrCreateArtista(artista);
             int idGenero = GetOrCreateGenero(genero);
 
-            // Ahora GetOrCreateAlbum admite la portada (aunque esté vacía)
             int idAlbum = GetOrCreateAlbum(album, idArtista, anio, portadaUrl);
 
             InsertarCancion(new Cancion
@@ -339,10 +363,13 @@ namespace MusicManager.Data
             });
         }
 
-        // =====================================================================
-        // UTILIDADES
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que obtiene el ID de un registro en una tabla de forma case insensitive.
+        /// </summary>
+        /// <param name="tablaNombre"></param>
+        /// <param name="campo"></param>
+        /// <param name="valor"></param>
+        /// <returns>Retorna el ID del registro o -1 si no existe.</returns>
         private int ObtenerIdCaseInsensitive(string tablaNombre, string campo, string valor)
         {
             var cmd = conexion.CreateCommand();
@@ -355,6 +382,11 @@ namespace MusicManager.Data
             return (res == null) ? -1 : Convert.ToInt32(res);
         }
 
+        /// <summary>
+        /// Metodo que obtiene el año de una canción de forma segura.
+        /// </summary>
+        /// <param name="tagFile"></param>
+        /// <returns>Retorna el año o 0 si no se encuentra.</returns>
         private int GetYearSeguro(TagLib.File tagFile)
         {
             if (tagFile == null)
@@ -381,10 +413,15 @@ namespace MusicManager.Data
             return 0;
         }
 
-        // =====================================================================
-        // METADATOS EN ARCHIVO
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que actualiza los metadatos de un archivo de música.
+        /// </summary>
+        /// <param name="ruta"></param>
+        /// <param name="titulo"></param>
+        /// <param name="artista"></param>
+        /// <param name="album"></param>
+        /// <param name="genero"></param>
+        /// <param name="anio"></param>
         public void ActualizarMetadatosEnArchivo(string ruta, string titulo, string artista, string album, string genero, int anio)
         {
             try
@@ -397,7 +434,6 @@ namespace MusicManager.Data
                 if (file.Tag == null)
                     return;
 
-                // --- Actualizar etiquetas ---
                 file.Tag.Title = titulo ?? "";
                 file.Tag.Performers = new[] { artista ?? "" };
                 file.Tag.Album = album ?? "";
@@ -408,7 +444,6 @@ namespace MusicManager.Data
                 else
                     file.Tag.Year = 0;
 
-                // --- Guardar cambios ---
                 file.Save();
             }
             catch (Exception ex)
@@ -417,11 +452,9 @@ namespace MusicManager.Data
             }
         }
 
-
-        // =====================================================================
-        // LIMPIEZA DE HUÉRFANOS
-        // =====================================================================
-
+        /// <summary>
+        /// Metodo que elimina los registros huérfanos de álbumes, artistas y géneros.
+        /// </summary>
         public void LimpiarHuerfanos()
         {
             var cmd = conexion.CreateCommand();
@@ -439,6 +472,10 @@ namespace MusicManager.Data
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Metodo que obtiene todos los géneros disponibles.
+        /// </summary>
+        /// <returns>Retorna una lista de géneros.</returns>
         internal IEnumerable<object> ObtenerTodosGeneros()
         {
             var generos = new List<string>();

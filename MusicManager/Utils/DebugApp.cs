@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MusicManager.Modelos
+namespace MusicManager.Utils
 {
     public class DebugApp
     {
