@@ -966,13 +966,17 @@ namespace MusicManager
         /// </summary>
         public void RefreshToolBar()
         {
-            if (estadoApp == EstadoApp.SinConexion)
+            estadoApp = Program.appMusic.estadoApp;
+
+            if (estadoApp == EstadoApp.SinConexion || estadoApp == EstadoApp.Error)
             {
                 pnLateral.Enabled = false;
+                pnReproductor.Enabled = false;
             }
             else
             {
                 pnLateral.Enabled = true;
+                pnReproductor.Enabled = true;
             }
         }
 
@@ -986,18 +990,23 @@ namespace MusicManager
             if (estadoApp == EstadoApp.SinConexion)
             {
                 lbConexionDB.Text = "Sin conexión a la base de datos";
+                lbConexionDB.ForeColor = Color.Red;
             }
             else if (estadoApp == EstadoApp.Conectado)
             {
                 lbConexionDB.Text = "Conectado a la base de datos";
+                lbConexionDB.ForeColor = Color.Green;
+                lbConexionDB.Font = new Font(lbConexionDB.Font, FontStyle.Bold);
             }
             else if (estadoApp == EstadoApp.Error)
             {
-                lbConexionDB.Text = "Error en la aplicación";
+                lbConexionDB.Text = "Error, consulte el registro de errores.";
+                lbConexionDB.ForeColor = Color.Red;
             }
             else if (estadoApp == EstadoApp.Iniciando)
             {
                 lbConexionDB.Text = "Iniciando aplicación...";
+                lbConexionDB.ForeColor = Color.Orange;
             }
         }
 

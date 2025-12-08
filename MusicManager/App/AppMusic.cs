@@ -55,8 +55,32 @@ namespace MusicManager
             // Inicializa el sistema de logs
             debug = new DebugApp(rutaBase);
 
+            // Crear archivo si no existe
+            if (!File.Exists(rutaConfigDB))
+                CrearArchivoConfigDB();
+
             // Configuro y me conecto a la base de datos.
             ConfiguraYConectaDB(rutaConfigDB);
+        }
+
+        /// <summary>
+        /// Método que crea un archivo de configuración de la base de datos
+        /// </summary>
+        private void CrearArchivoConfigDB()
+        {
+            var cfgDefault = new ConfiguracionConexion
+            {
+                servidor = "localhost",
+                puerto = 3306,
+                usuario = "root",
+                password = "",
+                baseDatos = "db_musicmanager"
+            };
+
+            string json = JsonSerializer.Serialize(cfgDefault, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(rutaConfigDB, json);
+
+            RegistrarLog("Config", "Archivo configDB.json generado automáticamente.");
         }
 
         /// <summary>

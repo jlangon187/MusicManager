@@ -114,7 +114,9 @@ namespace MusicManager.Forms
             using OpenFileDialog dlg = new OpenFileDialog
             {
                 Filter = "Archivo JSON|*.json",
-                Title = "Seleccionar archivo de configuración"
+                Title = "Seleccionar archivo de configuración",
+                InitialDirectory = Path.GetDirectoryName(Program.appMusic.rutaConfigDB),
+                FileName = "configDB.json"
             };
 
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -162,7 +164,10 @@ namespace MusicManager.Forms
             using SaveFileDialog dlg = new SaveFileDialog
             {
                 Filter = "Archivo JSON|*.json",
-                Title = "Guardar configuración como..."
+                Title = "Guardar configuración como...",
+                InitialDirectory = Path.GetDirectoryName(Program.appMusic.rutaConfigDB),
+                FileName = "configDB.json"
+
             };
 
             if (dlg.ShowDialog() == DialogResult.OK)

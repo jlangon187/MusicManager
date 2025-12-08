@@ -137,7 +137,7 @@ namespace MusicManager
             pnReproductor.Controls.Add(btnPlay);
             pnReproductor.Controls.Add(btnPausa);
             pnReproductor.Dock = DockStyle.Bottom;
-            pnReproductor.Location = new Point(0, 621);
+            pnReproductor.Location = new Point(0, 651);
             pnReproductor.Name = "pnReproductor";
             pnReproductor.Size = new Size(1114, 60);
             pnReproductor.TabIndex = 3;
@@ -302,7 +302,7 @@ namespace MusicManager
             pnContenido.Location = new Point(180, 60);
             pnContenido.Name = "pnContenido";
             pnContenido.Padding = new Padding(10);
-            pnContenido.Size = new Size(934, 531);
+            pnContenido.Size = new Size(934, 561);
             pnContenido.TabIndex = 2;
             // 
             // dgvCanciones
@@ -329,7 +329,7 @@ namespace MusicManager
             dgvCanciones.ReadOnly = true;
             dgvCanciones.RowHeadersVisible = false;
             dgvCanciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCanciones.Size = new Size(914, 511);
+            dgvCanciones.Size = new Size(914, 541);
             dgvCanciones.TabIndex = 0;
             dgvCanciones.CellDoubleClick += dgvCanciones_CellDoubleClick;
             dgvCanciones.SelectionChanged += dgvCanciones_SelectionChanged;
@@ -381,26 +381,27 @@ namespace MusicManager
             // statusStrip1
             // 
             statusStrip1.Dock = DockStyle.Fill;
+            statusStrip1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             statusStrip1.Items.AddRange(new ToolStripItem[] { lbConexionDB, lblTotalArtistas, lblTotalAlbumes, lblTotalGeneros, lblDuracionTotal, lblTotalCanciones });
             statusStrip1.Location = new Point(0, 0);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(934, 30);
+            statusStrip1.Size = new Size(1114, 30);
             statusStrip1.SizingGrip = false;
             statusStrip1.TabIndex = 0;
             // 
             // lbConexionDB
             // 
             lbConexionDB.AutoSize = false;
-            lbConexionDB.Margin = new Padding(0, 3, 50, 2);
+            lbConexionDB.Margin = new Padding(10, 3, 2, 2);
             lbConexionDB.Name = "lbConexionDB";
-            lbConexionDB.Size = new Size(220, 25);
+            lbConexionDB.Size = new Size(400, 25);
             lbConexionDB.Text = "No está conectado a la base de datos";
             lbConexionDB.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblTotalArtistas
             // 
             lblTotalArtistas.Name = "lblTotalArtistas";
-            lblTotalArtistas.Size = new Size(329, 25);
+            lblTotalArtistas.Size = new Size(363, 25);
             lblTotalArtistas.Spring = true;
             lblTotalArtistas.Text = "Artistas: 0";
             lblTotalArtistas.TextAlign = ContentAlignment.MiddleRight;
@@ -408,19 +409,19 @@ namespace MusicManager
             // lblTotalAlbumes
             // 
             lblTotalAlbumes.Name = "lblTotalAlbumes";
-            lblTotalAlbumes.Size = new Size(66, 25);
+            lblTotalAlbumes.Size = new Size(67, 25);
             lblTotalAlbumes.Text = "Álbumes: 0";
             // 
             // lblTotalGeneros
             // 
             lblTotalGeneros.Name = "lblTotalGeneros";
-            lblTotalGeneros.Size = new Size(62, 25);
+            lblTotalGeneros.Size = new Size(63, 25);
             lblTotalGeneros.Text = "Géneros: 0";
             // 
             // lblDuracionTotal
             // 
             lblDuracionTotal.Name = "lblDuracionTotal";
-            lblDuracionTotal.Size = new Size(118, 25);
+            lblDuracionTotal.Size = new Size(120, 25);
             lblDuracionTotal.Text = "Duración total: 0 min";
             // 
             // lblTotalCanciones
@@ -564,23 +565,23 @@ namespace MusicManager
             // 
             pnStatusBar.Controls.Add(statusStrip1);
             pnStatusBar.Dock = DockStyle.Bottom;
-            pnStatusBar.Location = new Point(180, 591);
+            pnStatusBar.Location = new Point(0, 621);
             pnStatusBar.Name = "pnStatusBar";
-            pnStatusBar.Size = new Size(934, 30);
+            pnStatusBar.Size = new Size(1114, 30);
             pnStatusBar.TabIndex = 6;
             // 
             // FrmMain
             // 
-            ClientSize = new Size(1114, 681);
+            ClientSize = new Size(1114, 711);
             Controls.Add(pnContenido);
-            Controls.Add(pnStatusBar);
             Controls.Add(pnHerramientas);
             Controls.Add(pnLateral);
+            Controls.Add(pnStatusBar);
             Controls.Add(pnMenuPrincipal);
             Controls.Add(pnReproductor);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
-            MinimumSize = new Size(1130, 720);
+            MinimumSize = new Size(1130, 750);
             Name = "FrmMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MusicManager";
