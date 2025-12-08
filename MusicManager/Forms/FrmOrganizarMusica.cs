@@ -23,6 +23,8 @@ namespace MusicManager.Forms
         {
             InitializeComponent();
 
+            ThemeManager.ApplyTheme(this);    // Aplicar tema al formulario
+
             grid = dgv;                     // Asignar referencia al DataGridView
             carpetaBase = carpeta;          // Asignar carpeta base
 
@@ -46,7 +48,14 @@ namespace MusicManager.Forms
         /// <param name="e"></param>
         private void cbModo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ActualizarVistaPrevia();
+            try
+            {
+                ActualizarVistaPrevia();
+            }
+            catch (Exception ex)
+            {
+                Program.appMusic.RegistrarLog("Error al actualizar vista previa en FrmOrganizarMusica: ", ex.Message);
+            }
         }
 
         /// <summary>

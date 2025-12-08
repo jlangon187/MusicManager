@@ -17,13 +17,6 @@
         private Panel pnControles;
         private Panel pnOpciones;
 
-        private DataGridViewTextBoxColumn colTitulo;
-        private DataGridViewTextBoxColumn colArtista;
-        private DataGridViewTextBoxColumn colAlbum;
-        private DataGridViewTextBoxColumn colGenero;
-        private DataGridViewTextBoxColumn colAnio;
-        private DataGridViewTextBoxColumn colFuente;
-
         protected override void Dispose(bool disposing)
         {
             if (disposing && components != null)
@@ -34,14 +27,9 @@
 
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSeleccionarMetadatos));
             dgvResultados = new DataGridView();
-            colTitulo = new DataGridViewTextBoxColumn();
-            colArtista = new DataGridViewTextBoxColumn();
-            colAlbum = new DataGridViewTextBoxColumn();
-            colGenero = new DataGridViewTextBoxColumn();
-            colAnio = new DataGridViewTextBoxColumn();
-            colFuente = new DataGridViewTextBoxColumn();
             btnAceptar = new Button();
             btnCancelar = new Button();
             txtBusqueda = new TextBox();
@@ -54,6 +42,12 @@
             pnStatus = new Panel();
             StatusStrip = new StatusStrip();
             tsStatusLabel = new ToolStripStatusLabel();
+            colTitulo = new DataGridViewTextBoxColumn();
+            colArtista = new DataGridViewTextBoxColumn();
+            colAlbum = new DataGridViewTextBoxColumn();
+            colGenero = new DataGridViewTextBoxColumn();
+            colAnio = new DataGridViewTextBoxColumn();
+            colFuente = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvResultados).BeginInit();
             pnOpciones.SuspendLayout();
             pnGrid.SuspendLayout();
@@ -65,50 +59,22 @@
             // dgvResultados
             // 
             dgvResultados.AllowUserToAddRows = false;
+            dgvResultados.AllowUserToDeleteRows = false;
+            dgvResultados.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = Color.White;
+            dgvResultados.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgvResultados.ColumnHeadersHeight = 30;
+            dgvResultados.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dgvResultados.Columns.AddRange(new DataGridViewColumn[] { colTitulo, colArtista, colAlbum, colGenero, colAnio, colFuente });
             dgvResultados.Dock = DockStyle.Fill;
             dgvResultados.Location = new Point(0, 0);
+            dgvResultados.MultiSelect = false;
             dgvResultados.Name = "dgvResultados";
+            dgvResultados.ReadOnly = true;
             dgvResultados.RowHeadersVisible = false;
             dgvResultados.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvResultados.Size = new Size(864, 418);
+            dgvResultados.Size = new Size(864, 419);
             dgvResultados.TabIndex = 0;
-            // 
-            // colTitulo
-            // 
-            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colTitulo.HeaderText = "Título";
-            colTitulo.Name = "colTitulo";
-            // 
-            // colArtista
-            // 
-            colArtista.HeaderText = "Artista";
-            colArtista.Name = "colArtista";
-            colArtista.Width = 200;
-            // 
-            // colAlbum
-            // 
-            colAlbum.HeaderText = "Álbum";
-            colAlbum.Name = "colAlbum";
-            colAlbum.Width = 200;
-            // 
-            // colGenero
-            // 
-            colGenero.HeaderText = "Género";
-            colGenero.Name = "colGenero";
-            colGenero.Width = 120;
-            // 
-            // colAnio
-            // 
-            colAnio.HeaderText = "Año";
-            colAnio.Name = "colAnio";
-            colAnio.Width = 80;
-            // 
-            // colFuente
-            // 
-            colFuente.HeaderText = "Fuente";
-            colFuente.Name = "colFuente";
-            colFuente.Width = 120;
             // 
             // btnAceptar
             // 
@@ -135,14 +101,14 @@
             txtBusqueda.Name = "txtBusqueda";
             txtBusqueda.PlaceholderText = "Buscar manualmente...";
             txtBusqueda.Size = new Size(565, 23);
-            txtBusqueda.TabIndex = 3;
+            txtBusqueda.TabIndex = 0;
             // 
             // btnBuscar
             // 
             btnBuscar.Location = new Point(576, 2);
             btnBuscar.Name = "btnBuscar";
             btnBuscar.Size = new Size(70, 27);
-            btnBuscar.TabIndex = 2;
+            btnBuscar.TabIndex = 1;
             btnBuscar.Text = "Buscar";
             btnBuscar.Click += btnBuscar_Click;
             // 
@@ -153,7 +119,7 @@
             chkSpotify.Location = new Point(659, 6);
             chkSpotify.Name = "chkSpotify";
             chkSpotify.Size = new Size(104, 24);
-            chkSpotify.TabIndex = 0;
+            chkSpotify.TabIndex = 2;
             chkSpotify.Text = "Usar Spotify";
             // 
             // chkITunes
@@ -163,7 +129,7 @@
             chkITunes.Location = new Point(769, 6);
             chkITunes.Name = "chkITunes";
             chkITunes.Size = new Size(92, 24);
-            chkITunes.TabIndex = 1;
+            chkITunes.TabIndex = 3;
             chkITunes.Text = "Usar iTunes";
             // 
             // pnOpciones
@@ -176,7 +142,7 @@
             pnOpciones.Location = new Point(0, 0);
             pnOpciones.Name = "pnOpciones";
             pnOpciones.Size = new Size(864, 32);
-            pnOpciones.TabIndex = 4;
+            pnOpciones.TabIndex = 0;
             // 
             // pnGrid
             // 
@@ -184,7 +150,7 @@
             pnGrid.Dock = DockStyle.Fill;
             pnGrid.Location = new Point(0, 32);
             pnGrid.Name = "pnGrid";
-            pnGrid.Size = new Size(864, 418);
+            pnGrid.Size = new Size(864, 419);
             pnGrid.TabIndex = 0;
             // 
             // pnControles
@@ -192,16 +158,16 @@
             pnControles.Controls.Add(btnAceptar);
             pnControles.Controls.Add(btnCancelar);
             pnControles.Dock = DockStyle.Bottom;
-            pnControles.Location = new Point(0, 472);
+            pnControles.Location = new Point(0, 473);
             pnControles.Name = "pnControles";
             pnControles.Size = new Size(864, 48);
-            pnControles.TabIndex = 5;
+            pnControles.TabIndex = 1;
             // 
             // pnStatus
             // 
             pnStatus.Controls.Add(StatusStrip);
             pnStatus.Dock = DockStyle.Bottom;
-            pnStatus.Location = new Point(0, 450);
+            pnStatus.Location = new Point(0, 451);
             pnStatus.Name = "pnStatus";
             pnStatus.Size = new Size(864, 22);
             pnStatus.TabIndex = 6;
@@ -213,6 +179,7 @@
             StatusStrip.Location = new Point(0, 0);
             StatusStrip.Name = "StatusStrip";
             StatusStrip.Size = new Size(864, 22);
+            StatusStrip.SizingGrip = false;
             StatusStrip.TabIndex = 0;
             StatusStrip.Text = "statusStrip1";
             // 
@@ -222,15 +189,59 @@
             tsStatusLabel.Size = new Size(100, 17);
             tsStatusLabel.Text = "Nº de Resultados:";
             // 
+            // colTitulo
+            // 
+            colTitulo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTitulo.FillWeight = 200F;
+            colTitulo.HeaderText = "Título";
+            colTitulo.Name = "colTitulo";
+            colTitulo.ReadOnly = true;
+            // 
+            // colArtista
+            // 
+            colArtista.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colArtista.HeaderText = "Artista";
+            colArtista.Name = "colArtista";
+            colArtista.ReadOnly = true;
+            // 
+            // colAlbum
+            // 
+            colAlbum.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAlbum.HeaderText = "Álbum";
+            colAlbum.Name = "colAlbum";
+            colAlbum.ReadOnly = true;
+            // 
+            // colGenero
+            // 
+            colGenero.HeaderText = "Género";
+            colGenero.Name = "colGenero";
+            colGenero.ReadOnly = true;
+            colGenero.Width = 120;
+            // 
+            // colAnio
+            // 
+            colAnio.HeaderText = "Año";
+            colAnio.Name = "colAnio";
+            colAnio.ReadOnly = true;
+            colAnio.Width = 80;
+            // 
+            // colFuente
+            // 
+            colFuente.HeaderText = "Fuente";
+            colFuente.Name = "colFuente";
+            colFuente.ReadOnly = true;
+            colFuente.Width = 120;
+            // 
             // FrmSeleccionarMetadatos
             // 
-            ClientSize = new Size(864, 520);
+            ClientSize = new Size(864, 521);
             Controls.Add(pnGrid);
             Controls.Add(pnStatus);
             Controls.Add(pnOpciones);
             Controls.Add(pnControles);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimizeBox = false;
+            MinimumSize = new Size(880, 560);
             Name = "FrmSeleccionarMetadatos";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Seleccionar metadatos";
@@ -248,5 +259,11 @@
         private Panel pnStatus;
         private StatusStrip StatusStrip;
         private ToolStripStatusLabel tsStatusLabel;
+        private DataGridViewTextBoxColumn colTitulo;
+        private DataGridViewTextBoxColumn colArtista;
+        private DataGridViewTextBoxColumn colAlbum;
+        private DataGridViewTextBoxColumn colGenero;
+        private DataGridViewTextBoxColumn colAnio;
+        private DataGridViewTextBoxColumn colFuente;
     }
 }

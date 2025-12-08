@@ -30,6 +30,9 @@ namespace MusicManager.Forms
         {
             try
             {
+                // Aplicar tema
+                ThemeManager.ApplyTheme(this);
+
                 cbGenero.DropDownStyle = ComboBoxStyle.DropDownList;            // Establecer estilo del ComboBox de género
 
                 ruta = row.Cells["colRuta"].Value.ToString();
@@ -63,6 +66,7 @@ namespace MusicManager.Forms
             }
             catch (Exception ex)
             {
+                Program.appMusic.RegistrarLog("Error cargando metadatos: ", ex.Message);
                 MessageBox.Show("Error cargando metadatos: " + ex.Message);
             }
         }
@@ -141,15 +145,23 @@ namespace MusicManager.Forms
                 tag.Tag.Album = txtAlbum.Text;
                 tag.Tag.Genres = new[] { cbGenero.Text };
 
-                if (Validacion.ValidarAnio(txtAnio.Text, out int anio))
+                int anio;
+
+                if (!string.IsNullOrWhiteSpace(txtAnio.Text))
                 {
-                    tag.Tag.Year = (uint)anio;
+                    // Si escribe algo, debe ser un año válido
+                    if (!Validacion.ValidarAnio(txtAnio.Text, out anio))
+                    {
+                        MessageBox.Show("Año inválido. Debe estar entre 1900 y 2100.");
+                        return;
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Año inválido. Introduzca un año válido.");
-                    tag.Tag.Year = 0;
+                    anio = 0;
                 }
+
+                tag.Tag.Year = (uint)anio;
                 tag.Save();
 
                 int idArtista = gestor.GetOrCreateArtista(txtArtista.Text);
@@ -186,6 +198,7 @@ namespace MusicManager.Forms
             }
             catch (Exception ex)
             {
+                Program.appMusic.RegistrarLog("Error guardando metadatos: ", ex.Message);
                 MessageBox.Show("Error guardando metadatos: " + ex.Message);
             }
         }

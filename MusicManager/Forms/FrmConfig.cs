@@ -1,4 +1,5 @@
 using MusicManager.App;
+using MusicManager.Utils;
 using System.Text.Json;
 
 namespace MusicManager.Forms
@@ -189,6 +190,9 @@ namespace MusicManager.Forms
 
         private void FrmConnection_Load(object sender, EventArgs e)
         {
+            // Aplica el tema visual actual
+            ThemeManager.ApplyTheme(this);
+
             // Si hay configuración cargada, la mostramos
             if (Program.appMusic.configConexion != null)
             {

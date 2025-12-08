@@ -53,38 +53,28 @@ namespace MusicManager
         /// <param name="e"></param>
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            reproductor = new WaveOutEvent();                                       // Inicializar reproductor NAudio
-            gm = new GestorMusica(Program.appMusic.LaConexion);                     // Inicializar gestor de música con la conexión de la aplicación
-            estadoApp = Program.appMusic.estadoApp;                                 // Obtener estado actual de la aplicación
+            // Aplicar estilo global
+            ThemeManager.ApplyTheme(this);
 
-            // Configurar timer para progreso de canción
+            reproductor = new WaveOutEvent();
+            gm = new GestorMusica(Program.appMusic.LaConexion);
+            estadoApp = Program.appMusic.estadoApp;
+
             timerProgreso = new Timer();
             timerProgreso.Interval = 200;
             timerProgreso.Tick += TimerProgreso_Tick;
 
-            // Ocultar barra de progreso y portada inicialmente
             progressBarSync.Visible = false;
             pbPortada.Visible = false;
 
-            // Configurar estilo del DataGridView
-            dgvCanciones.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(131, 189, 87);
-            dgvCanciones.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font(dgvCanciones.Font.FontFamily, 11, System.Drawing.FontStyle.Regular);
-            dgvCanciones.ColumnHeadersHeight = 40;
-            dgvCanciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvCanciones.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-            dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(131, 189, 87);
-            dgvCanciones.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
-            dgvCanciones.EnableHeadersVisualStyles = false;
-
-            RefrescarControles();                                                   // Refrescar controles según el estado
+            RefrescarControles();
 
             lblReproduciendo.Text = "No se está reproduciendo ninguna canción.";
 
-            // Mostrar u ocultar consola de depuración según el modo de compilación
 #if DEBUG
             consolaDeDepuraciónToolStripMenuItem.Visible = true;
 #else
-            consolaDeDepuraciónToolStripMenuItem.Visible = false;
+    consolaDeDepuraciónToolStripMenuItem.Visible = false;
 #endif
         }
 
@@ -235,8 +225,8 @@ namespace MusicManager
         /// <summary>
         /// Metodo para descargar metadatos de la canción seleccionada
         /// </summary>
-        /// <param name="sender">Se le pasa como parametro el boton que lo llama</param>
-        /// <param name="e">Se le pasa como parametro el evento</param>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnDescargarMetadatos_Click(object sender, EventArgs e)
         {
             await EjecutarAccionUIAsync(btnDescargarMetadatos, async () =>
@@ -386,6 +376,7 @@ namespace MusicManager
                 return;
             }
 
+            DetenerReproductorSiActivo();
             using var frm = new FrmEditarMetadatos(dgvCanciones.CurrentRow, gm);
             frm.ShowDialog();
         }
@@ -415,7 +406,7 @@ namespace MusicManager
         }
 
         /// <summary>
-        /// Metodo para filtrar las canciones en el DataGridView según el texto de búsqueda
+        /// Metodo para filtrar las canciones mostradas según el texto de búsqueda
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -726,7 +717,7 @@ namespace MusicManager
         /// <summary>
         /// Metodo asíncrono para ejecutar la sincronización completa
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Retorna una tarea asíncrona</returns>
         private async Task SincronizarTodoAsync()
         {
             // Ejecutar sincronización de BD + lectura de archivos en background
@@ -739,13 +730,13 @@ namespace MusicManager
         /// <summary>
         /// Metodo asíncrono para cargar las canciones desde la carpeta seleccionada
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Retorna una tarea asíncrona</returns>
         private async Task CargarCancionesDeCarpetaAsync()
         {
             dgvCanciones.Enabled = false;
             dgvCanciones.SuspendLayout();
 
-            // --- 1) Leer canciones en segundo plano ---
+            // Leer canciones en segundo plano ---
             var lista = await Task.Run(() =>
             {
                 var resultado = new List<object[]>();
@@ -776,7 +767,7 @@ namespace MusicManager
                 return resultado;
             });
 
-            // --- 2) Volcar datos a la UI ---
+            // Muestra las canciones en el DataGridView
             dgvCanciones.Rows.Clear();
 
             foreach (var fila in lista)
@@ -804,9 +795,6 @@ namespace MusicManager
             List<string> actualizadas = new();
             List<string> eliminadas = new();
 
-            // ============================================================
-            // 1) OBTENER RUTAS FÍSICAS Y BD NORMALIZADAS
-            // ============================================================
             var rutasFisicasNorm = Directory
                 .GetFiles(carpetaMusica, "*.mp3", SearchOption.AllDirectories)
                 .Select(r => gm.NormalizarRuta(r))
@@ -816,9 +804,6 @@ namespace MusicManager
                 .Select(r => gm.NormalizarRuta(r))
                 .ToList();
 
-            // ============================================================
-            // 2) DETECTAR E INSERTAR NUEVAS CANCIONES
-            // ============================================================
             nuevas = rutasFisicasNorm
                 .Except(rutasBDNorm)
                 .ToList();
@@ -826,14 +811,12 @@ namespace MusicManager
             foreach (var ruta in nuevas)
                 gm.InsertarCancionDesdeArchivo(ruta);
 
-            // ============================================================
-            // 3) RECORRER TODAS LAS CANCIONES DE BD
-            // ============================================================
+            // Recorrer las nuevas rutas para actualizar la barra de progreso
             foreach (var rutaBD in rutasBDNorm)
             {
                 string ruta = rutaBD; // Normalizada
 
-                // 3.1) Archivo no existe en disco → eliminar
+                // Si el archivo ya no existe, eliminar de BD
                 if (!File.Exists(ruta))
                 {
                     gm.EliminarCancionPorRuta(ruta);
@@ -841,7 +824,6 @@ namespace MusicManager
                     continue;
                 }
 
-                // 3.2) Leer metadatos reales desde archivo
                 TagLib.File tag = null;
                 try { tag = TagLib.File.Create(ruta); }
                 catch { continue; }
@@ -853,17 +835,15 @@ namespace MusicManager
                 int anio = (int)tag.Tag.Year;
                 string duracion = tag.Properties.Duration.ToString(@"mm\:ss");
 
-                // 3.3) Obtener ID de la canción en BD
                 var cancionBD = gm.ObtenerCancionPorRuta(ruta);
                 if (cancionBD == null)
                     continue;
 
-                // 3.4) Obtener IDs actualizados de artista/álbum/género
                 int idArtista = gm.GetOrCreateArtista(artista);
                 int idGenero = gm.GetOrCreateGenero(genero);
                 int idAlbum = gm.GetOrCreateAlbum(album, idArtista, anio);
 
-                // 3.5) COMPARAR con los datos actuales de BD (solo actualizar si hay cambios)
+                // Compara y actualiza si hay cambios
                 bool cambiado =
                     !string.Equals(cancionBD.titulo, titulo, StringComparison.InvariantCultureIgnoreCase) ||
                     !string.Equals(cancionBD.duracion, duracion) ||
@@ -889,16 +869,7 @@ namespace MusicManager
                     actualizadas.Add(ruta);
                 }
             }
-
-            // ============================================================
-            // 4) LIMPIEZA FINAL DE HUÉRFANOS
-            // ============================================================
             gm.LimpiarHuerfanos();
-
-            // ============================================================
-            // 5) REFRESCAR TABLA Y MOSTRAR RESUMEN
-            // ============================================================
-            //CargarCancionesDeCarpetaAsync();
 
             MostrarResumenSincronizacion(nuevas, actualizadas, eliminadas);
         }
@@ -917,7 +888,7 @@ namespace MusicManager
                 $"✔ Actualizadas: {actualizadas.Count}\n" +
                 $"✔ Eliminadas: {eliminadas.Count}\n";
 
-            MessageBox.Show(resumen, "Sincronización completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, resumen, "Sincronización completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -1010,6 +981,8 @@ namespace MusicManager
         /// </summary>
         public void RefreshStatusBar()
         {
+            estadoApp = Program.appMusic.estadoApp;
+
             if (estadoApp == EstadoApp.SinConexion)
             {
                 lbConexionDB.Text = "Sin conexión a la base de datos";
@@ -1103,7 +1076,7 @@ namespace MusicManager
         /// </summary>
         /// <param name="boton"></param>
         /// <param name="accion"></param>
-        /// <returns></returns>
+        /// <returns>Retorna una tarea asíncrona</returns>
         private async Task EjecutarAccionUIAsync(Button boton, Func<Task> accion)
         {
             string textoOriginal = boton?.Text;
@@ -1120,14 +1093,12 @@ namespace MusicManager
 
                 progressBarSync.Visible = true;
 
-                progressBarSync.Refresh(); // Fuerza repintado inmediato
-                await Task.Yield();        // Libera UI y deja que se pinte
+                progressBarSync.Refresh();
+                await Task.Yield();
 
                 progressBarSync.Value = 100;
 
                 await accion();
-
-
             }
             catch (Exception ex)
             {
@@ -1137,7 +1108,6 @@ namespace MusicManager
             {
                 progressBarSync.Value = 0;
                 progressBarSync.Visible = false;
-
 
                 if (boton != null)
                 {
@@ -1154,12 +1124,9 @@ namespace MusicManager
         /// </summary>
         /// <param name="titulo"></param>
         /// <param name="artista"></param>
-        /// <returns></returns>
+        /// <returns>Retorna los metadatos seleccionados o null si se cancela</returns>
         private async Task<MetadatosAPI.MetadataResult> BuscarMetadatosConFallback(string titulo, string artista)
         {
-            // ================================================
-            // PRIMERA BÚSQUEDA → parseo automático
-            // ================================================
             var datosIniciales = MetadatosAPI.ParsearBusqueda($"{titulo} {artista}");
             var lista = await MetadatosAPI.BuscarLista(datosIniciales.titulo, datosIniciales.artista);
 
@@ -1172,9 +1139,7 @@ namespace MusicManager
                 return null;
             }
 
-            // ================================================
-            // SIN RESULTADOS → pedir búsqueda manual
-            // ================================================
+            // Si no hay resultados, pedir búsqueda manual al usuario
             string manual = Microsoft.VisualBasic.Interaction.InputBox(
                 "No se encontraron coincidencias.\n\nIntroduce una búsqueda manual (ej: Beyoncé - Halo):",
                 "Buscar manualmente",
@@ -1194,9 +1159,6 @@ namespace MusicManager
                 return null;
             }
 
-            // ================================================
-            // SEGUNDA SELECCIÓN MANUAL
-            // ================================================
             using (var frm = new FrmSeleccionarMetadatos(lista))
             {
                 if (frm.ShowDialog() == DialogResult.OK)

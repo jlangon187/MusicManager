@@ -24,12 +24,21 @@ namespace MusicManager
         /// <param name="e"></param>
         private void FrmSeleccionarMetadatos_Load(object sender, EventArgs e)
         {
+            // Aplicar tema visual
+            ThemeManager.ApplyTheme(this);
+
             // Configurar opciones iniciales
             chkSpotify.Checked = MetadatosAPI.UsarSpotify;          
             chkITunes.Checked = MetadatosAPI.UsarITunes;
 
             // Cargar resultados iniciales
             CargarResultadosEnGrid(resultados);
+
+            // Anular la ordenacion de las columnas del DataGridView
+            foreach (DataGridViewColumn column in dgvResultados.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
 
         /// <summary>

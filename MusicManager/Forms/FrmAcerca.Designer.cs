@@ -58,7 +58,7 @@
             gbAcerca.Location = new Point(215, 37);
             gbAcerca.Name = "gbAcerca";
             gbAcerca.Size = new Size(239, 166);
-            gbAcerca.TabIndex = 1;
+            gbAcerca.TabIndex = 0;
             gbAcerca.TabStop = false;
             gbAcerca.Text = "Aplicación realizada por";
             // 
@@ -69,7 +69,7 @@
             lbAcerca.Location = new Point(26, 29);
             lbAcerca.Name = "lbAcerca";
             lbAcerca.Size = new Size(188, 22);
-            lbAcerca.TabIndex = 2;
+            lbAcerca.TabIndex = 0;
             lbAcerca.Text = "Javier Lanzas González";
             // 
             // lblPayPal
@@ -99,7 +99,7 @@
             lbVersion.Location = new Point(18, 232);
             lbVersion.Name = "lbVersion";
             lbVersion.Size = new Size(126, 15);
-            lbVersion.TabIndex = 2;
+            lbVersion.TabIndex = 1;
             lbVersion.Text = "Version v1.0 build 1000";
             // 
             // frmAcerca

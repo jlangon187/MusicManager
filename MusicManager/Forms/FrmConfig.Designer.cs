@@ -56,6 +56,7 @@ namespace MusicManager.Forms
             tsBtnGuardar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
             tsLbRutaConfig = new ToolStripLabel();
+            pnPrincipal = new Panel();
             pnData.SuspendLayout();
             statusStrip1.SuspendLayout();
             toolStrip1.SuspendLayout();
@@ -76,7 +77,7 @@ namespace MusicManager.Forms
             pnData.Location = new Point(20, 69);
             pnData.Name = "pnData";
             pnData.Size = new Size(510, 196);
-            pnData.TabIndex = 2;
+            pnData.TabIndex = 3;
             // 
             // label5
             // 
@@ -164,19 +165,20 @@ namespace MusicManager.Forms
             // label6
             // 
             label6.AutoSize = true;
+            label6.BackColor = Color.FromArgb(230, 242, 228);
             label6.Font = new Font("Segoe UI", 14F);
             label6.Location = new Point(22, 35);
             label6.Name = "label6";
             label6.Size = new Size(300, 25);
-            label6.TabIndex = 1;
+            label6.TabIndex = 2;
             label6.Text = "Conexión a bases de datos MySQL";
             // 
             // btnConexion
             // 
-            btnConexion.Location = new Point(142, 271);
+            btnConexion.Location = new Point(50, 280);
             btnConexion.Name = "btnConexion";
             btnConexion.Size = new Size(128, 41);
-            btnConexion.TabIndex = 3;
+            btnConexion.TabIndex = 4;
             btnConexion.Text = "Probar conexión";
             btnConexion.UseVisualStyleBackColor = true;
             btnConexion.Click += btnConexion_Click;
@@ -187,7 +189,7 @@ namespace MusicManager.Forms
             statusStrip1.Location = new Point(0, 332);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(562, 22);
-            statusStrip1.TabIndex = 4;
+            statusStrip1.TabIndex = 5;
             statusStrip1.Text = "statusStrip1";
             // 
             // tsStatusLabel
@@ -245,16 +247,25 @@ namespace MusicManager.Forms
             tsLbRutaConfig.TextAlign = ContentAlignment.MiddleLeft;
             tsLbRutaConfig.ToolTipText = "Ruta del archivo de configuración";
             // 
+            // pnPrincipal
+            // 
+            pnPrincipal.Dock = DockStyle.Fill;
+            pnPrincipal.Location = new Point(0, 25);
+            pnPrincipal.Name = "pnPrincipal";
+            pnPrincipal.Size = new Size(562, 307);
+            pnPrincipal.TabIndex = 1;
+            // 
             // FrmConfig
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(562, 354);
-            Controls.Add(toolStrip1);
-            Controls.Add(statusStrip1);
             Controls.Add(btnConexion);
             Controls.Add(label6);
             Controls.Add(pnData);
+            Controls.Add(pnPrincipal);
+            Controls.Add(toolStrip1);
+            Controls.Add(statusStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(578, 393);
@@ -296,5 +307,6 @@ namespace MusicManager.Forms
         private ToolStripLabel tsLbRutaConfig;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripProgressBar tsProgressBarConexion;
+        private Panel pnPrincipal;
     }
 }

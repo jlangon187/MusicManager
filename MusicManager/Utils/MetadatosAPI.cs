@@ -119,15 +119,29 @@ namespace MusicManager.Utils
             // Spotify
             if (UsarSpotify)
             {
-                var spot = await BuscarSpotify(titulo, artista);
-                resultados.AddRange(spot);
+                try
+                {
+                    var spot = await BuscarSpotify(titulo, artista);
+                    resultados.AddRange(spot);
+                }
+                catch (Exception ex)
+                {
+                    Program.appMusic.RegistrarLog("MetadatosAPI.Spotify.ERROR", ex.Message);
+                }
             }
 
             // iTunes
             if (UsarITunes)
             {
-                var itunes = await BuscarITunes(titulo, artista);
-                resultados.AddRange(itunes);
+                try
+                {
+                    var itunes = await BuscarITunes(titulo, artista);
+                    resultados.AddRange(itunes);
+                }
+                catch (Exception ex)
+                {
+                    Program.appMusic.RegistrarLog("MetadatosAPI.iTunes.ERROR", ex.Message);
+                }
             }
 
             // Quitar duplicados (título + artista)

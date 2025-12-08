@@ -10,6 +10,9 @@ namespace MusicManager.Forms
         public FrmConfigAPI()
         {
             InitializeComponent();
+
+            // Aplicar tema
+            ThemeManager.ApplyTheme(this);
         }
 
         // Eventos de los botones de prueba de conexión

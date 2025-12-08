@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicManager.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,6 +23,10 @@ namespace MusicManager.Forms
         // Evento Load
         private void frmAcerca_Load(object sender, EventArgs e)
         {
+            // Aplicar tema visual
+            ThemeManager.ApplyTheme(this);
+
+            // Configurar LinkLabel
             lblPayPal.Text = "Ayúdame con una donación";
             lblPayPal.Links.Clear();
             lblPayPal.Links.Add(0, lblPayPal.Text.Length, "https://www.paypal.com/es/home");

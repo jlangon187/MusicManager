@@ -140,7 +140,7 @@ namespace MusicManager
             pnReproductor.Location = new Point(0, 621);
             pnReproductor.Name = "pnReproductor";
             pnReproductor.Size = new Size(1114, 60);
-            pnReproductor.TabIndex = 1;
+            pnReproductor.TabIndex = 3;
             // 
             // lblVolumen
             // 
@@ -149,7 +149,7 @@ namespace MusicManager
             lblVolumen.Location = new Point(947, 32);
             lblVolumen.Name = "lblVolumen";
             lblVolumen.Size = new Size(57, 15);
-            lblVolumen.TabIndex = 7;
+            lblVolumen.TabIndex = 6;
             lblVolumen.Text = "Volumen:";
             // 
             // lblTiempo
@@ -158,7 +158,7 @@ namespace MusicManager
             lblTiempo.Location = new Point(829, 32);
             lblTiempo.Name = "lblTiempo";
             lblTiempo.Size = new Size(93, 19);
-            lblTiempo.TabIndex = 0;
+            lblTiempo.TabIndex = 5;
             lblTiempo.Text = "00:00 / 00:00";
             // 
             // trackProgreso
@@ -169,7 +169,7 @@ namespace MusicManager
             trackProgreso.Location = new Point(206, 29);
             trackProgreso.Name = "trackProgreso";
             trackProgreso.Size = new Size(617, 25);
-            trackProgreso.TabIndex = 1;
+            trackProgreso.TabIndex = 4;
             trackProgreso.TickStyle = TickStyle.None;
             trackProgreso.MouseDown += trackProgreso_MouseDown;
             trackProgreso.MouseUp += trackProgreso_MouseUp;
@@ -183,7 +183,7 @@ namespace MusicManager
             trackVolumen.Maximum = 100;
             trackVolumen.Name = "trackVolumen";
             trackVolumen.Size = new Size(101, 25);
-            trackVolumen.TabIndex = 2;
+            trackVolumen.TabIndex = 7;
             trackVolumen.TickStyle = TickStyle.None;
             trackVolumen.Value = 100;
             trackVolumen.ValueChanged += trackVolumen_ValueChanged;
@@ -205,7 +205,7 @@ namespace MusicManager
             lblReproduciendo.Location = new Point(10, 10);
             lblReproduciendo.Name = "lblReproduciendo";
             lblReproduciendo.Size = new Size(146, 15);
-            lblReproduciendo.TabIndex = 4;
+            lblReproduciendo.TabIndex = 0;
             lblReproduciendo.Text = "Reproduciendo: (ninguna)";
             // 
             // btnPlay
@@ -214,7 +214,7 @@ namespace MusicManager
             btnPlay.Location = new Point(10, 30);
             btnPlay.Name = "btnPlay";
             btnPlay.Size = new Size(60, 23);
-            btnPlay.TabIndex = 5;
+            btnPlay.TabIndex = 1;
             btnPlay.Text = "Play";
             btnPlay.Click += btnPlay_Click;
             // 
@@ -224,7 +224,7 @@ namespace MusicManager
             btnPausa.Location = new Point(75, 30);
             btnPausa.Name = "btnPausa";
             btnPausa.Size = new Size(60, 23);
-            btnPausa.TabIndex = 6;
+            btnPausa.TabIndex = 2;
             btnPausa.Text = "Pausa";
             btnPausa.Click += btnPausa_Click;
             // 
@@ -303,14 +303,14 @@ namespace MusicManager
             pnContenido.Name = "pnContenido";
             pnContenido.Padding = new Padding(10);
             pnContenido.Size = new Size(934, 531);
-            pnContenido.TabIndex = 5;
+            pnContenido.TabIndex = 2;
             // 
             // dgvCanciones
             // 
             dgvCanciones.AllowUserToAddRows = false;
             dgvCanciones.AllowUserToDeleteRows = false;
             dgvCanciones.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(192, 251, 180);
+            dataGridViewCellStyle1.BackColor = Color.White;
             dgvCanciones.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvCanciones.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -320,7 +320,7 @@ namespace MusicManager
             dataGridViewCellStyle2.SelectionForeColor = Color.Black;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             dgvCanciones.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            dgvCanciones.ColumnHeadersHeight = 40;
+            dgvCanciones.ColumnHeadersHeight = 30;
             dgvCanciones.Columns.AddRange(new DataGridViewColumn[] { colTitulo, colArtista, colAlbum, colGenero, colAnno, colRuta });
             dgvCanciones.Dock = DockStyle.Fill;
             dgvCanciones.Location = new Point(10, 10);
@@ -386,7 +386,7 @@ namespace MusicManager
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(934, 30);
             statusStrip1.SizingGrip = false;
-            statusStrip1.TabIndex = 3;
+            statusStrip1.TabIndex = 0;
             // 
             // lbConexionDB
             // 
@@ -440,7 +440,7 @@ namespace MusicManager
             pnHerramientas.Name = "pnHerramientas";
             pnHerramientas.Padding = new Padding(10, 5, 10, 5);
             pnHerramientas.Size = new Size(934, 30);
-            pnHerramientas.TabIndex = 5;
+            pnHerramientas.TabIndex = 1;
             // 
             // progressBarSync
             // 
@@ -448,7 +448,7 @@ namespace MusicManager
             progressBarSync.Location = new Point(672, 5);
             progressBarSync.Name = "progressBarSync";
             progressBarSync.Size = new Size(250, 20);
-            progressBarSync.TabIndex = 3;
+            progressBarSync.TabIndex = 2;
             // 
             // txtBuscarCancion
             // 
@@ -456,7 +456,7 @@ namespace MusicManager
             txtBuscarCancion.Name = "txtBuscarCancion";
             txtBuscarCancion.PlaceholderText = "Buscar canción, artista, álbum, género, año...";
             txtBuscarCancion.Size = new Size(488, 23);
-            txtBuscarCancion.TabIndex = 1;
+            txtBuscarCancion.TabIndex = 0;
             txtBuscarCancion.TextChanged += txtBuscarCancion_TextChanged;
             // 
             // btnLimpiarBusqueda
@@ -464,7 +464,7 @@ namespace MusicManager
             btnLimpiarBusqueda.Location = new Point(504, 4);
             btnLimpiarBusqueda.Name = "btnLimpiarBusqueda";
             btnLimpiarBusqueda.Size = new Size(30, 23);
-            btnLimpiarBusqueda.TabIndex = 2;
+            btnLimpiarBusqueda.TabIndex = 1;
             btnLimpiarBusqueda.Text = "✖";
             btnLimpiarBusqueda.Click += btnLimpiarBusqueda_Click;
             // 
@@ -483,7 +483,7 @@ namespace MusicManager
             pnLateral.Name = "pnLateral";
             pnLateral.Padding = new Padding(10);
             pnLateral.Size = new Size(180, 591);
-            pnLateral.TabIndex = 2;
+            pnLateral.TabIndex = 0;
             // 
             // pbPortada
             // 
@@ -504,7 +504,7 @@ namespace MusicManager
             btnSincronizaTodo.Location = new Point(10, 170);
             btnSincronizaTodo.Name = "btnSincronizaTodo";
             btnSincronizaTodo.Size = new Size(160, 40);
-            btnSincronizaTodo.TabIndex = 7;
+            btnSincronizaTodo.TabIndex = 4;
             btnSincronizaTodo.Text = "Sincronizar Todo";
             btnSincronizaTodo.Click += btnSincronizaTodo_Click;
             // 
@@ -526,7 +526,7 @@ namespace MusicManager
             btnOrganizar.Location = new Point(10, 130);
             btnOrganizar.Name = "btnOrganizar";
             btnOrganizar.Size = new Size(160, 40);
-            btnOrganizar.TabIndex = 0;
+            btnOrganizar.TabIndex = 3;
             btnOrganizar.Text = "Organizar Música";
             btnOrganizar.Click += btnOrganizar_Click;
             // 
@@ -536,7 +536,7 @@ namespace MusicManager
             btnDescargarMetadatos.Location = new Point(10, 90);
             btnDescargarMetadatos.Name = "btnDescargarMetadatos";
             btnDescargarMetadatos.Size = new Size(160, 40);
-            btnDescargarMetadatos.TabIndex = 1;
+            btnDescargarMetadatos.TabIndex = 2;
             btnDescargarMetadatos.Text = "Descargar Metadatos";
             btnDescargarMetadatos.Click += btnDescargarMetadatos_Click;
             // 
@@ -546,7 +546,7 @@ namespace MusicManager
             btnEditarMetadatos.Location = new Point(10, 50);
             btnEditarMetadatos.Name = "btnEditarMetadatos";
             btnEditarMetadatos.Size = new Size(160, 40);
-            btnEditarMetadatos.TabIndex = 4;
+            btnEditarMetadatos.TabIndex = 1;
             btnEditarMetadatos.Text = "Editar Metadatos";
             btnEditarMetadatos.Click += btnEditarMetadatos_Click;
             // 
@@ -556,7 +556,7 @@ namespace MusicManager
             btnSeleccionarCarpeta.Location = new Point(10, 10);
             btnSeleccionarCarpeta.Name = "btnSeleccionarCarpeta";
             btnSeleccionarCarpeta.Size = new Size(160, 40);
-            btnSeleccionarCarpeta.TabIndex = 2;
+            btnSeleccionarCarpeta.TabIndex = 0;
             btnSeleccionarCarpeta.Text = "Seleccionar Carpeta";
             btnSeleccionarCarpeta.Click += btnSeleccionarCarpeta_Click;
             // 
@@ -576,8 +576,8 @@ namespace MusicManager
             Controls.Add(pnStatusBar);
             Controls.Add(pnHerramientas);
             Controls.Add(pnLateral);
-            Controls.Add(pnReproductor);
             Controls.Add(pnMenuPrincipal);
+            Controls.Add(pnReproductor);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             MinimumSize = new Size(1130, 720);

@@ -70,7 +70,7 @@
             lblArtista.Location = new Point(20, 60);
             lblArtista.Name = "lblArtista";
             lblArtista.Size = new Size(44, 15);
-            lblArtista.TabIndex = 1;
+            lblArtista.TabIndex = 2;
             lblArtista.Text = "Artista:";
             // 
             // lblAlbum
@@ -79,7 +79,7 @@
             lblAlbum.Location = new Point(20, 100);
             lblAlbum.Name = "lblAlbum";
             lblAlbum.Size = new Size(46, 15);
-            lblAlbum.TabIndex = 2;
+            lblAlbum.TabIndex = 4;
             lblAlbum.Text = "Álbum:";
             // 
             // lblGenero
@@ -88,7 +88,7 @@
             lblGenero.Location = new Point(20, 140);
             lblGenero.Name = "lblGenero";
             lblGenero.Size = new Size(48, 15);
-            lblGenero.TabIndex = 3;
+            lblGenero.TabIndex = 6;
             lblGenero.Text = "Género:";
             // 
             // lblAnio
@@ -97,7 +97,7 @@
             lblAnio.Location = new Point(20, 180);
             lblAnio.Name = "lblAnio";
             lblAnio.Size = new Size(32, 15);
-            lblAnio.TabIndex = 4;
+            lblAnio.TabIndex = 9;
             lblAnio.Text = "Año:";
             // 
             // lblDuracion
@@ -106,7 +106,7 @@
             lblDuracion.Location = new Point(20, 220);
             lblDuracion.Name = "lblDuracion";
             lblDuracion.Size = new Size(58, 15);
-            lblDuracion.TabIndex = 5;
+            lblDuracion.TabIndex = 11;
             lblDuracion.Text = "Duración:";
             // 
             // lblRuta
@@ -115,7 +115,7 @@
             lblRuta.Location = new Point(20, 260);
             lblRuta.Name = "lblRuta";
             lblRuta.Size = new Size(95, 15);
-            lblRuta.TabIndex = 6;
+            lblRuta.TabIndex = 13;
             lblRuta.Text = "Ruta del archivo:";
             // 
             // txtTitulo
@@ -123,28 +123,28 @@
             txtTitulo.Location = new Point(150, 18);
             txtTitulo.Name = "txtTitulo";
             txtTitulo.Size = new Size(300, 23);
-            txtTitulo.TabIndex = 7;
+            txtTitulo.TabIndex = 1;
             // 
             // txtArtista
             // 
             txtArtista.Location = new Point(150, 58);
             txtArtista.Name = "txtArtista";
             txtArtista.Size = new Size(300, 23);
-            txtArtista.TabIndex = 8;
+            txtArtista.TabIndex = 3;
             // 
             // txtAlbum
             // 
             txtAlbum.Location = new Point(150, 98);
             txtAlbum.Name = "txtAlbum";
             txtAlbum.Size = new Size(300, 23);
-            txtAlbum.TabIndex = 9;
+            txtAlbum.TabIndex = 5;
             // 
             // txtAnio
             // 
             txtAnio.Location = new Point(150, 178);
             txtAnio.Name = "txtAnio";
             txtAnio.Size = new Size(100, 23);
-            txtAnio.TabIndex = 11;
+            txtAnio.TabIndex = 10;
             txtAnio.KeyPress += txtAnio_KeyPress;
             // 
             // txtDuracion
@@ -161,14 +161,14 @@
             txtRuta.Name = "txtRuta";
             txtRuta.ReadOnly = true;
             txtRuta.Size = new Size(480, 23);
-            txtRuta.TabIndex = 13;
+            txtRuta.TabIndex = 14;
             // 
             // btnGuardar
             // 
             btnGuardar.Location = new Point(150, 300);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(150, 32);
-            btnGuardar.TabIndex = 14;
+            btnGuardar.TabIndex = 15;
             btnGuardar.Text = "Guardar cambios";
             btnGuardar.Click += btnGuardar_Click;
             // 
@@ -177,7 +177,7 @@
             btnCancelar.Location = new Point(320, 300);
             btnCancelar.Name = "btnCancelar";
             btnCancelar.Size = new Size(120, 32);
-            btnCancelar.TabIndex = 15;
+            btnCancelar.TabIndex = 16;
             btnCancelar.Text = "Cancelar";
             btnCancelar.Click += btnCancelar_Click;
             // 
@@ -195,7 +195,7 @@
             btnAdd.Location = new Point(320, 139);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(60, 23);
-            btnAdd.TabIndex = 17;
+            btnAdd.TabIndex = 8;
             btnAdd.Text = "Nuevo";
             btnAdd.UseVisualStyleBackColor = true;
             btnAdd.Click += btnAdd_Click;
@@ -206,7 +206,7 @@
             cbGenero.Location = new Point(150, 140);
             cbGenero.Name = "cbGenero";
             cbGenero.Size = new Size(164, 23);
-            cbGenero.TabIndex = 18;
+            cbGenero.TabIndex = 7;
             // 
             // FrmEditarMetadatos
             // 

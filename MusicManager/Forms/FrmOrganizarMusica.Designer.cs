@@ -40,7 +40,7 @@
             cbModo.Location = new Point(17, 35);
             cbModo.Name = "cbModo";
             cbModo.Size = new Size(260, 23);
-            cbModo.TabIndex = 0;
+            cbModo.TabIndex = 1;
             cbModo.SelectedIndexChanged += cbModo_SelectedIndexChanged;
             // 
             // txtRutaAntigua
@@ -59,14 +59,14 @@
             txtRutaNueva.Name = "txtRutaNueva";
             txtRutaNueva.ReadOnly = true;
             txtRutaNueva.Size = new Size(645, 23);
-            txtRutaNueva.TabIndex = 4;
+            txtRutaNueva.TabIndex = 5;
             // 
             // lblAntigua
             // 
             lblAntigua.Location = new Point(17, 72);
             lblAntigua.Name = "lblAntigua";
             lblAntigua.Size = new Size(130, 23);
-            lblAntigua.TabIndex = 1;
+            lblAntigua.TabIndex = 2;
             lblAntigua.Text = "Ruta actual (ejemplo):";
             // 
             // lblNueva
@@ -74,7 +74,7 @@
             lblNueva.Location = new Point(17, 135);
             lblNueva.Name = "lblNueva";
             lblNueva.Size = new Size(150, 23);
-            lblNueva.TabIndex = 2;
+            lblNueva.TabIndex = 4;
             lblNueva.Text = "Nueva ruta (ejemplo):";
             // 
             // btnAceptar
@@ -82,7 +82,7 @@
             btnAceptar.Location = new Point(17, 198);
             btnAceptar.Name = "btnAceptar";
             btnAceptar.Size = new Size(150, 32);
-            btnAceptar.TabIndex = 5;
+            btnAceptar.TabIndex = 6;
             btnAceptar.Text = "Organizar música";
             btnAceptar.Click += btnAceptar_Click;
             // 
@@ -91,7 +91,7 @@
             btnCerrar.Location = new Point(172, 198);
             btnCerrar.Name = "btnCerrar";
             btnCerrar.Size = new Size(120, 32);
-            btnCerrar.TabIndex = 6;
+            btnCerrar.TabIndex = 7;
             btnCerrar.Text = "Cerrar";
             btnCerrar.Click += btnCerrar_Click;
             // 
@@ -100,7 +100,7 @@
             lbSeleccionador.Location = new Point(17, 11);
             lbSeleccionador.Name = "lbSeleccionador";
             lbSeleccionador.Size = new Size(205, 23);
-            lbSeleccionador.TabIndex = 7;
+            lbSeleccionador.TabIndex = 0;
             lbSeleccionador.Text = "Seleccione el modo de organización:";
             // 
             // FrmOrganizarMusica
