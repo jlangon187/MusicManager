@@ -233,6 +233,9 @@ namespace MusicManager
             {
                 DetenerReproductorSiActivo();
                 pnLateral.Enabled = false;
+                pnHerramientas.Enabled = false;
+                pnReproductor.Enabled = false;
+                dgvCanciones.Enabled = false;
                 progressBarSync.Visible = true;
                 progressBarSync.Style = ProgressBarStyle.Marquee;
                 progressBarSync.MarqueeAnimationSpeed = 30;
@@ -260,6 +263,8 @@ namespace MusicManager
 
                     string ruta = dgvCanciones.CurrentRow.Cells["colRuta"].Value.ToString();
 
+
+
                     gm.ActualizarMetadatosEnArchivo(
                         ruta,
                         meta.Titulo,
@@ -284,6 +289,9 @@ namespace MusicManager
                 finally
                 {
                     pnLateral.Enabled = true;
+                    pnHerramientas.Enabled = true;
+                    pnReproductor.Enabled = true;
+                    dgvCanciones.Enabled = true;
                     progressBarSync.Visible = false;
                     progressBarSync.MarqueeAnimationSpeed = 0;
                 }
@@ -1141,6 +1149,9 @@ namespace MusicManager
 
             if (lista.Count > 0)
             {
+                progressBarSync.Visible = false;
+                progressBarSync.MarqueeAnimationSpeed = 0;
+
                 using var frm = new FrmSeleccionarMetadatos(lista);
                 if (frm.ShowDialog() == DialogResult.OK)
                     return frm.Seleccionado;
